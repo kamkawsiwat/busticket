@@ -1,0 +1,2790 @@
+<!doctype html>
+<html lang="th">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>จองตั๋วรถออนไลน์</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+        body {
+            box-sizing: border-box;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="min-h-full" id="mainBody">
+  <header class="bg-white shadow-lg" id="header">
+   <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-16">
+     <div class="flex items-center">
+      <div class="text-2xl font-bold" id="siteTitle">
+       🚌 BusTicket
+      </div>
+     </div>
+     <div class="hidden md:block">
+      <div class="ml-10 flex items-baseline space-x-4"><a href="#" class="text-gray-700 px-3 py-2 rounded-md text-sm font-medium nav-link">หน้าแรก</a> <a href="#" class="text-gray-700 px-3 py-2 rounded-md text-sm font-medium nav-link">เส้นทาง</a> <a href="#" class="text-gray-700 px-3 py-2 rounded-md text-sm font-medium nav-link">ติดต่อเรา</a>
+      </div>
+     </div>
+    </div>
+   </nav>
+  </header>
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"><!-- Hero Section -->
+   <div class="text-center mb-12">
+    <h1 class="text-4xl font-bold text-gray-900 mb-4" id="mainHeading">จองตั๋วรถทัวร์ออนไลน์</h1>
+    <p class="text-xl text-gray-600" id="subHeading">เดินทางสะดวก ปลอดภัย ราคาประหยัด</p>
+   </div><!-- Booking Form -->
+   <div class="bg-white rounded-xl shadow-xl p-8 mb-8">
+    <form id="bookingForm" class="space-y-6">
+     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div><label for="departure" class="block text-sm font-medium text-gray-700 mb-2">ต้นทาง</label> <select id="departure" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:border-transparent form-input"> <option value="">เลือกต้นทาง</option> <option value="bangkok">กรุงเทพฯ</option> <option value="chiangmai">เชียงใหม่</option> <option value="phuket">ภูเก็ต</option> <option value="pattaya">พัทยา</option> <option value="korat">นครราชสีมา</option> </select>
+      </div>
+      <div><label for="destination" class="block text-sm font-medium text-gray-700 mb-2">ปลายทาง</label> <select id="destination" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:border-transparent form-input"> <option value="">เลือกปลายทาง</option> <option value="bangkok">กรุงเทพฯ</option> <option value="chiangmai">เชียงใหม่</option> <option value="phuket">ภูเก็ต</option> <option value="pattaya">พัทยา</option> <option value="korat">นครราชสีมา</option> </select>
+      </div>
+      <div><label for="date" class="block text-sm font-medium text-gray-700 mb-2">วันที่เดินทาง</label> <input type="date" id="date" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:border-transparent form-input">
+      </div>
+      <div><label for="passengers" class="block text-sm font-medium text-gray-700 mb-2">จำนวนผู้โดยสาร</label> <select id="passengers" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:border-transparent form-input"> <option value="1">1 คน</option> <option value="2">2 คน</option> <option value="3">3 คน</option> <option value="4">4 คน</option> <option value="5">5+ คน</option> </select>
+      </div>
+     </div>
+     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div><label class="flex items-center"> <input type="checkbox" id="disabledSeat" class="rounded border-gray-300 shadow-sm focus:ring checkbox-input"> <span class="ml-2 text-sm text-gray-700">♿ ต้องการที่นั่งสำหรับผู้พิการ</span> </label>
+       <p class="text-xs text-gray-500 mt-1">ที่นั่งพิเศษสำหรับผู้ใช้รถเข็น และผู้ที่ต้องการความช่วยเหลือ</p>
+      </div>
+      <div><label class="flex items-center"> <input type="checkbox" id="seniorCitizen" class="rounded border-gray-300 shadow-sm focus:ring checkbox-input"> <span class="ml-2 text-sm text-gray-700">👴 ผู้สูงอายุ (ส่วนลด 10%)</span> </label>
+       <p class="text-xs text-gray-500 mt-1">สำหรับผู้สูงอายุ 60 ปีขึ้นไป</p>
+      </div>
+     </div>
+     <div class="text-center"><button type="submit" class="font-bold py-4 px-8 rounded-lg text-lg transition duration-200 transform hover:scale-105 primary-button"> กดค้นหาเที่ยวรถ </button>
+     </div>
+    </form>
+   </div><!-- Search Results -->
+   <div id="searchResults" class="hidden">
+    <h2 class="text-2xl font-bold text-gray-900 mb-6">ผลการค้นหา</h2>
+    <div id="busRoutes" class="space-y-4"><!-- Results will be populated here -->
+    </div>
+   </div><!-- Booking Details Modal -->
+   <div id="bookingModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-xl p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+     <h3 class="text-xl font-bold text-gray-900 mb-4">รายละเอียดการจอง</h3>
+     <div id="bookingDetails" class="space-y-3 mb-6"><!-- Booking details will be populated here -->
+     </div><!-- Identity Verification Form -->
+     <div class="border-t pt-6 mb-6">
+      <h4 class="text-lg font-semibold text-gray-900 mb-4">🆔 ยืนยันตัวตน</h4>
+      <form id="identityForm" class="space-y-4">
+       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div><label for="idNumber" class="block text-sm font-medium text-gray-700 mb-2">เลขบัตรประชาชน</label> <input type="text" id="idNumber" maxlength="13" placeholder="1234567890123" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:border-transparent form-input">
+        </div>
+        <div><label for="phoneNumber" class="block text-sm font-medium text-gray-700 mb-2">เบอร์โทรศัพท์</label> <input type="tel" id="phoneNumber" maxlength="10" placeholder="0812345678" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:border-transparent form-input">
+        </div>
+       </div>
+       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div><label for="firstName" class="block text-sm font-medium text-gray-700 mb-2">ชื่อ</label> <input type="text" id="firstName" placeholder="ชื่อจริง" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:border-transparent form-input">
+        </div>
+        <div><label for="lastName" class="block text-sm font-medium text-gray-700 mb-2">นามสกุล</label> <input type="text" id="lastName" placeholder="นามสกุล" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:border-transparent form-input">
+        </div>
+       </div>
+       <div><label for="email" class="block text-sm font-medium text-gray-700 mb-2">อีเมล</label> <input type="email" id="email" placeholder="example@email.com" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:border-transparent form-input">
+       </div>
+       <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+        <div class="flex items-start">
+         <div class="flex-shrink-0"><span class="text-yellow-600">⚠️</span>
+         </div>
+         <div class="ml-3">
+          <h5 class="text-sm font-medium text-yellow-800">ข้อมูลสำคัญ</h5>
+          <p class="text-sm text-yellow-700 mt-1">กรุณากรอกข้อมูลให้ตรงกับบัตรประชาชน เพื่อใช้ในการตรวจสอบตัวตนก่อนขึ้นรถ ท่านจะต้องแสดงบัตรประชาชนหรือเอกสารที่มีรูปถ่ายในวันเดินทาง</p>
+         </div>
+        </div>
+       </div>
+       <div class="flex items-center"><input type="checkbox" id="agreeTerms" class="rounded border-gray-300 shadow-sm focus:ring checkbox-input"> <label for="agreeTerms" class="ml-2 text-sm text-gray-700"> ฉันยอมรับ <a href="#" class="theme-link">เงื่อนไขการใช้บริการ</a> และ <a href="#" class="theme-link">นโยบายความเป็นส่วนตัว</a> </label>
+       </div>
+      </form>
+     </div><!-- Payment Section -->
+     <div class="border-t pt-6 mb-6">
+      <h4 class="text-lg font-semibold text-gray-900 mb-4">💳 เลือกวิธีชำระเงิน</h4><!-- Payment Method Selection -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+       <div class="payment-method border-2 rounded-lg p-4 cursor-pointer transition duration-200 hover:shadow-md" data-method="card">
+        <div class="text-center">
+         <div class="text-2xl mb-2">
+          💳
+         </div>
+         <div class="font-semibold">
+          บัตรเครดิต/เดบิต
+         </div>
+         <div class="text-xs text-gray-500 mt-1">
+          Visa, MasterCard, JCB
+         </div>
+        </div>
+       </div>
+       <div class="payment-method border-2 rounded-lg p-4 cursor-pointer transition duration-200 hover:shadow-md" data-method="qr">
+        <div class="text-center">
+         <div class="text-2xl mb-2">
+          📱
+         </div>
+         <div class="font-semibold">
+          QR Code
+         </div>
+         <div class="text-xs text-gray-500 mt-1">
+          PromptPay, TrueMoney
+         </div>
+        </div>
+       </div>
+       <div class="payment-method border-2 rounded-lg p-4 cursor-pointer transition duration-200 hover:shadow-md" data-method="cash">
+        <div class="text-center">
+         <div class="text-2xl mb-2">
+          💵
+         </div>
+         <div class="font-semibold">
+          เงินสด
+         </div>
+         <div class="text-xs text-gray-500 mt-1">
+          จ่ายที่เคาน์เตอร์
+         </div>
+        </div>
+       </div>
+      </div><!-- Credit Card Form -->
+      <div id="cardPayment" class="payment-form hidden">
+       <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+        <div class="flex items-center"><span class="text-blue-600 mr-2">🔒</span> <span class="text-sm text-blue-800">การชำระเงินปลอดภัยด้วย SSL Encryption</span>
+        </div>
+       </div>
+       <div class="space-y-4">
+        <div><label for="cardNumber" class="block text-sm font-medium text-gray-700 mb-2">หมายเลขบัตร</label> <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:border-transparent form-input">
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+         <div><label for="expiryDate" class="block text-sm font-medium text-gray-700 mb-2">วันหมดอายุ</label> <input type="text" id="expiryDate" placeholder="MM/YY" maxlength="5" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:border-transparent form-input">
+         </div>
+         <div><label for="cvv" class="block text-sm font-medium text-gray-700 mb-2">CVV</label> <input type="text" id="cvv" placeholder="123" maxlength="4" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:border-transparent form-input">
+         </div>
+        </div>
+        <div><label for="cardName" class="block text-sm font-medium text-gray-700 mb-2">ชื่อบนบัตร</label> <input type="text" id="cardName" placeholder="ชื่อตามที่ปรากฏบนบัตร" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:border-transparent form-input">
+        </div>
+       </div>
+      </div><!-- QR Code Payment -->
+      <div id="qrPayment" class="payment-form hidden">
+       <div class="text-center">
+        <div class="bg-white border-2 border-dashed border-gray-300 rounded-lg p-8 mb-4">
+         <div id="qrCodeContainer" class="hidden">
+          <div class="text-6xl mb-4">
+           📱
+          </div>
+          <div class="w-48 h-48 bg-gray-100 border-2 border-gray-300 rounded-lg mx-auto mb-4 flex items-center justify-center">
+           <div class="text-center">
+            <div class="text-4xl mb-2">
+             ⬛⬜⬛
+            </div>
+            <div class="text-xs text-gray-500">
+             QR Code
+            </div>
+           </div>
+          </div>
+          <div class="text-sm text-gray-600 mb-2">
+           สแกน QR Code เพื่อชำระเงิน
+          </div>
+          <div class="font-bold text-lg" id="qrAmount">
+           ฿0
+          </div>
+          <div class="text-xs text-gray-500 mt-2">
+           รหัสอ้างอิง: <span id="qrReference"></span>
+          </div>
+         </div>
+         <div id="qrPlaceholder">
+          <div class="text-4xl mb-4">
+           📱
+          </div>
+          <div class="text-gray-500">
+           QR Code จะแสดงหลังจากเลือกวิธีชำระ
+          </div>
+         </div>
+        </div>
+        <div class="text-sm text-gray-600">
+         <p class="mb-2">📱 รองรับแอปพลิเคชัน:</p>
+         <div class="flex justify-center space-x-4 text-xs"><span class="bg-blue-100 text-blue-800 px-2 py-1 rounded">PromptPay</span> <span class="bg-red-100 text-red-800 px-2 py-1 rounded">TrueMoney</span> <span class="bg-green-100 text-green-800 px-2 py-1 rounded">SCB Easy</span> <span class="bg-purple-100 text-purple-800 px-2 py-1 rounded">K PLUS</span>
+         </div>
+        </div>
+       </div>
+      </div><!-- Cash Payment -->
+      <div id="cashPayment" class="payment-form hidden">
+       <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+        <div class="text-center">
+         <div class="text-4xl mb-4">
+          🏪
+         </div>
+         <h5 class="text-lg font-semibold text-gray-900 mb-3">ชำระเงินสดที่เคาน์เตอร์</h5>
+         <div class="space-y-3 text-sm text-gray-700">
+          <div class="flex items-center justify-center"><span class="mr-2">📍</span> <span>สามารถชำระได้ที่เคาน์เตอร์ขายตั๋วทุกสาขา</span>
+          </div>
+          <div class="flex items-center justify-center"><span class="mr-2">⏰</span> <span>ชำระภายใน 24 ชั่วโมง หลังจากจอง</span>
+          </div>
+          <div class="flex items-center justify-center"><span class="mr-2">🎫</span> <span>นำรหัสจองมาแสดงที่เคาน์เตอร์</span>
+          </div>
+         </div>
+         <div class="mt-4 p-3 bg-white rounded border">
+          <div class="text-xs text-gray-500 mb-1">
+           จำนวนเงินที่ต้องชำระ
+          </div>
+          <div class="font-bold text-xl" id="cashAmount">
+           ฿0
+          </div>
+         </div>
+         <div class="mt-4 text-xs text-gray-600">
+          <p class="font-medium mb-2">🏪 สาขาที่รับชำระเงิน:</p>
+          <div class="grid grid-cols-2 gap-2 text-left">
+           <div>
+            • เคาน์เตอร์หมอชิต
+           </div>
+           <div>
+            • เคาน์เตอร์สายใต้เก่า
+           </div>
+           <div>
+            • เคาน์เตอร์อนุสาวรีย์
+           </div>
+           <div>
+            • เคาน์เตอร์รังสิต
+           </div>
+           <div>
+            • เคาน์เตอร์ปากเกร็ด
+           </div>
+           <div>
+            • เคาน์เตอร์ลาดพร้าว
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div><!-- Payment Status -->
+      <div id="paymentStatus" class="hidden mt-4 p-4 rounded-lg">
+       <div id="paymentStatusContent"></div>
+      </div>
+     </div>
+     <div class="flex space-x-4"><button id="confirmBooking" class="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200"> ยืนยันการจองและชำระเงิน </button> <button id="cancelBooking" class="flex-1 bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-4 rounded-lg transition duration-200"> ยกเลิก </button>
+     </div>
+    </div>
+   </div><!-- Success Message -->
+   <div id="successMessage" class="hidden fixed top-4 right-4 px-6 py-4 rounded-lg shadow-lg z-50">
+    <div class="flex items-center"><span class="mr-2">✅</span> <span></span>
+    </div>
+   </div><!-- Booking Success Modal -->
+   <div id="bookingSuccessModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-xl p-8 max-w-md w-full mx-4 text-center fade-in">
+     <div class="mb-6">
+      <div class="text-6xl mb-4">
+       ✅
+      </div>
+      <h3 class="text-2xl font-bold text-green-600 mb-2">การจองสำเร็จ!</h3>
+      <p class="text-gray-600">ระบบได้บันทึกการจองของคุณเรียบร้อยแล้ว</p>
+     </div>
+     <div class="bg-green-50 border border-green-200 rounded-lg p-6 mb-6 text-left">
+      <div class="mb-4">
+       <div class="text-sm text-gray-600 mb-1">
+        รหัสการจอง
+       </div>
+       <div class="text-2xl font-bold text-green-700" id="successBookingRef"></div>
+      </div>
+      <div class="border-t border-green-200 pt-4 space-y-2 text-sm">
+       <div class="flex justify-between"><span class="text-gray-600">วิธีชำระเงิน:</span> <span class="font-medium" id="successPaymentMethod"></span>
+       </div>
+       <div class="flex justify-between"><span class="text-gray-600">ส่งยืนยันไปที่:</span> <span class="font-medium" id="successEmail"></span>
+       </div>
+      </div>
+     </div>
+     <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+      <div class="flex items-start"><span class="text-blue-600 text-2xl mr-3">📧</span>
+       <div class="text-left">
+        <div class="font-semibold text-blue-800 mb-1">
+         รอรับข้อความผ่านทางอีเมล
+        </div>
+        <p class="text-sm text-blue-700">เราได้ส่งรายละเอียดการจอง ใบเสร็จ และ QR Code สำหรับขึ้นรถ ไปยังอีเมลของคุณแล้ว กรุณาตรวจสอบกล่องจดหมายของคุณ</p>
+       </div>
+      </div>
+     </div>
+     <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6 text-left">
+      <div class="flex items-start"><span class="text-yellow-600 mr-2">⚠️</span>
+       <div class="text-sm text-yellow-800">
+        <div class="font-medium mb-1">
+         สิ่งที่ต้องเตรียมในวันเดินทาง:
+        </div>
+        <ul class="list-disc list-inside space-y-1">
+         <li>บัตรประชาชน (ตัวจริง)</li>
+         <li>QR Code จากอีเมล</li>
+         <li>มาก่อนเวลาออกรถ 30 นาที</li>
+        </ul>
+       </div>
+      </div>
+     </div><button onclick="closeSuccessModal()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg transition duration-200"> เรียบร้อย </button>
+     <p class="text-xs text-gray-500 mt-4">หากไม่ได้รับอีเมล กรุณาตรวจสอบในกล่อง Spam/Junk หรือติดต่อ 02-123-4567</p>
+    </div>
+   </div><!-- Reviews Section -->
+   <div class="mt-12">
+    <div class="text-center mb-8">
+     <h2 class="text-2xl font-bold text-gray-900 mb-4">รีวิวจากผู้ใช้งาน</h2>
+     <p class="text-gray-600">ความคิดเห็นและประสบการณ์จากลูกค้าที่ใช้บริการจริง</p>
+    </div><!-- Review Stats -->
+    <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+     <div class="grid grid-cols-1 md:grid-cols-4 gap-6 text-center">
+      <div>
+       <div class="text-3xl font-bold mb-2" id="totalReviews">
+        1,247
+       </div>
+       <div class="text-gray-600">
+        รีวิวทั้งหมด
+       </div>
+      </div>
+      <div>
+       <div class="flex items-center justify-center mb-2"><span class="text-3xl font-bold mr-2" id="averageRating">4.6</span>
+        <div class="flex text-yellow-400"><span>⭐⭐⭐⭐⭐</span>
+        </div>
+       </div>
+       <div class="text-gray-600">
+        คะแนนเฉลี่ย
+       </div>
+      </div>
+      <div>
+       <div class="text-3xl font-bold mb-2" id="satisfactionRate">
+        94%
+       </div>
+       <div class="text-gray-600">
+        ความพึงพอใจ
+       </div>
+      </div>
+      <div>
+       <div class="text-3xl font-bold mb-2" id="recommendRate">
+        92%
+       </div>
+       <div class="text-gray-600">
+        แนะนำเพื่อน
+       </div>
+      </div>
+     </div><!-- Rating Breakdown -->
+     <div class="mt-8 border-t pt-6">
+      <h4 class="text-lg font-semibold mb-4">การให้คะแนน</h4>
+      <div class="space-y-2">
+       <div class="flex items-center"><span class="w-12 text-sm">5 ⭐</span>
+        <div class="flex-1 mx-3 bg-gray-200 rounded-full h-2">
+         <div class="bg-yellow-400 h-2 rounded-full" style="width: 68%"></div>
+        </div><span class="w-12 text-sm text-gray-600">68%</span>
+       </div>
+       <div class="flex items-center"><span class="w-12 text-sm">4 ⭐</span>
+        <div class="flex-1 mx-3 bg-gray-200 rounded-full h-2">
+         <div class="bg-yellow-400 h-2 rounded-full" style="width: 22%"></div>
+        </div><span class="w-12 text-sm text-gray-600">22%</span>
+       </div>
+       <div class="flex items-center"><span class="w-12 text-sm">3 ⭐</span>
+        <div class="flex-1 mx-3 bg-gray-200 rounded-full h-2">
+         <div class="bg-yellow-400 h-2 rounded-full" style="width: 7%"></div>
+        </div><span class="w-12 text-sm text-gray-600">7%</span>
+       </div>
+       <div class="flex items-center"><span class="w-12 text-sm">2 ⭐</span>
+        <div class="flex-1 mx-3 bg-gray-200 rounded-full h-2">
+         <div class="bg-yellow-400 h-2 rounded-full" style="width: 2%"></div>
+        </div><span class="w-12 text-sm text-gray-600">2%</span>
+       </div>
+       <div class="flex items-center"><span class="w-12 text-sm">1 ⭐</span>
+        <div class="flex-1 mx-3 bg-gray-200 rounded-full h-2">
+         <div class="bg-yellow-400 h-2 rounded-full" style="width: 1%"></div>
+        </div><span class="w-12 text-sm text-gray-600">1%</span>
+       </div>
+      </div>
+     </div>
+    </div><!-- Write Review Button -->
+    <div class="text-center mb-8"><button id="writeReviewBtn" class="font-bold py-3 px-8 rounded-lg transition duration-200 transform hover:scale-105 primary-button"> ✍️ เขียนรีวิว </button>
+    </div><!-- Review Filters -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+     <div class="flex flex-wrap items-center gap-4"><span class="font-medium text-gray-700">กรองรีวิว:</span> <select id="ratingFilter" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:border-transparent form-input"> <option value="">ทุกคะแนน</option> <option value="5">5 ดาว</option> <option value="4">4 ดาว</option> <option value="3">3 ดาว</option> <option value="2">2 ดาว</option> <option value="1">1 ดาว</option> </select> <select id="routeFilter" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:border-transparent form-input"> <option value="">ทุกเส้นทาง</option> <option value="bangkok-chiangmai">กรุงเทพฯ - เชียงใหม่</option> <option value="bangkok-phuket">กรุงเทพฯ - ภูเก็ต</option> <option value="bangkok-pattaya">กรุงเทพฯ - พัทยา</option> <option value="bangkok-korat">กรุงเทพฯ - นครราชสีมา</option> </select> <select id="sortFilter" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:border-transparent form-input"> <option value="newest">ล่าสุด</option> <option value="oldest">เก่าสุด</option> <option value="highest">คะแนนสูงสุด</option> <option value="lowest">คะแนนต่ำสุด</option> <option value="helpful">มีประโยชน์มากสุด</option> </select>
+     </div>
+    </div><!-- Reviews List -->
+    <div id="reviewsList" class="space-y-6"><!-- Reviews will be populated here -->
+    </div><!-- Load More Reviews -->
+    <div class="text-center mt-8"><button id="loadMoreReviews" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-8 rounded-lg transition duration-200"> โหลดรีวิวเพิ่มเติม </button>
+    </div>
+   </div><!-- Write Review Modal -->
+   <div id="reviewModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-xl p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+     <h3 class="text-xl font-bold text-gray-900 mb-6">✍️ เขียนรีวิวการใช้งาน</h3>
+     <form id="reviewForm" class="space-y-6"><!-- Trip Information -->
+      <div class="bg-gray-50 rounded-lg p-4">
+       <h4 class="font-semibold text-gray-900 mb-3">ข้อมูลการเดินทาง</h4>
+       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div><label for="reviewRoute" class="block text-sm font-medium text-gray-700 mb-2">เ��้นทาง</label> <select id="reviewRoute" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:border-transparent form-input" required> <option value="">เลือกเส้นทาง</option> <option value="bangkok-chiangmai">กรุงเทพฯ - เชียงใหม่</option> <option value="bangkok-phuket">กรุงเทพฯ - ภูเก็ต</option> <option value="bangkok-pattaya">กรุงเทพฯ - พัทยา</option> <option value="bangkok-korat">กรุงเทพฯ - นครราชสีมา</option> <option value="chiangmai-bangkok">เชียงใหม่ - กรุงเทพฯ</option> <option value="phuket-bangkok">ภูเก็ต - กรุงเทพฯ</option> </select>
+        </div>
+        <div><label for="reviewCompany" class="block text-sm font-medium text-gray-700 mb-2">บริษัทขนส่ง</label> <select id="reviewCompany" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:border-transparent form-input" required> <option value="">เลือกบริษัท</option> <option value="company-a">บริษัท ขนส่ง A</option> <option value="company-b">บริษัท ขนส่ง B</option> <option value="company-c">บริษัท ขนส่ง C</option> </select>
+        </div>
+       </div>
+       <div class="mt-4"><label for="travelDate" class="block text-sm font-medium text-gray-700 mb-2">��ันที่เดินทาง</label> <input type="date" id="travelDate" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:border-transparent form-input" required>
+       </div>
+      </div><!-- Overall Rating -->
+      <div><label class="block text-sm font-medium text-gray-700 mb-3">คะแนนรวม *</label>
+       <div class="flex items-center space-x-2">
+        <div id="overallStars" class="flex space-x-1"><span class="star cursor-pointer text-3xl text-gray-300 hover:text-yellow-400" data-rating="1">⭐</span> <span class="star cursor-pointer text-3xl text-gray-300 hover:text-yellow-400" data-rating="2">⭐</span> <span class="star cursor-pointer text-3xl text-gray-300 hover:text-yellow-400" data-rating="3">⭐</span> <span class="star cursor-pointer text-3xl text-gray-300 hover:text-yellow-400" data-rating="4">⭐</span> <span class="star cursor-pointer text-3xl text-gray-300 hover:text-yellow-400" data-rating="5">⭐</span>
+        </div><span id="ratingText" class="text-gray-600 ml-3">เลือกคะแนน</span>
+       </div><input type="hidden" id="overallRating" required>
+      </div><!-- Detailed Ratings -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+       <div><label class="block text-sm font-medium text-gray-700 mb-2">ความสะดวกสบาย</label>
+        <div class="rating-group flex space-x-1" data-category="comfort"><span class="mini-star cursor-pointer text-xl text-gray-300 hover:text-yellow-400" data-rating="1">⭐</span> <span class="mini-star cursor-pointer text-xl text-gray-300 hover:text-yellow-400" data-rating="2">⭐</span> <span class="mini-star cursor-pointer text-xl text-gray-300 hover:text-yellow-400" data-rating="3">⭐</span> <span class="mini-star cursor-pointer text-xl text-gray-300 hover:text-yellow-400" data-rating="4">⭐</span> <span class="mini-star cursor-pointer text-xl text-gray-300 hover:text-yellow-400" data-rating="5">⭐</span>
+        </div><input type="hidden" id="comfortRating">
+       </div>
+       <div><label class="block text-sm font-medium text-gray-700 mb-2">ความตรงต่อเวลา</label>
+        <div class="rating-group flex space-x-1" data-category="punctuality"><span class="mini-star cursor-pointer text-xl text-gray-300 hover:text-yellow-400" data-rating="1">⭐</span> <span class="mini-star cursor-pointer text-xl text-gray-300 hover:text-yellow-400" data-rating="2">⭐</span> <span class="mini-star cursor-pointer text-xl text-gray-300 hover:text-yellow-400" data-rating="3">⭐</span> <span class="mini-star cursor-pointer text-xl text-gray-300 hover:text-yellow-400" data-rating="4">⭐</span> <span class="mini-star cursor-pointer text-xl text-gray-300 hover:text-yellow-400" data-rating="5">⭐</span>
+        </div><input type="hidden" id="punctualityRating">
+       </div>
+       <div><label class="block text-sm font-medium text-gray-700 mb-2">การบริการ</label>
+        <div class="rating-group flex space-x-1" data-category="service"><span class="mini-star cursor-pointer text-xl text-gray-300 hover:text-yellow-400" data-rating="1">⭐</span> <span class="mini-star cursor-pointer text-xl text-gray-300 hover:text-yellow-400" data-rating="2">⭐</span> <span class="mini-star cursor-pointer text-xl text-gray-300 hover:text-yellow-400" data-rating="3">⭐</span> <span class="mini-star cursor-pointer text-xl text-gray-300 hover:text-yellow-400" data-rating="4">⭐</span> <span class="mini-star cursor-pointer text-xl text-gray-300 hover:text-yellow-400" data-rating="5">⭐</span>
+        </div><input type="hidden" id="serviceRating">
+       </div>
+       <div><label class="block text-sm font-medium text-gray-700 mb-2">ความคุ้มค่า</label>
+        <div class="rating-group flex space-x-1" data-category="value"><span class="mini-star cursor-pointer text-xl text-gray-300 hover:text-yellow-400" data-rating="1">⭐</span> <span class="mini-star cursor-pointer text-xl text-gray-300 hover:text-yellow-400" data-rating="2">⭐</span> <span class="mini-star cursor-pointer text-xl text-gray-300 hover:text-yellow-400" data-rating="3">⭐</span> <span class="mini-star cursor-pointer text-xl text-gray-300 hover:text-yellow-400" data-rating="4">⭐</span> <span class="mini-star cursor-pointer text-xl text-gray-300 hover:text-yellow-400" data-rating="5">⭐</span>
+        </div><input type="hidden" id="valueRating">
+       </div>
+      </div><!-- Review Title -->
+      <div><label for="reviewTitle" class="block text-sm font-medium text-gray-700 mb-2">หัวข้อรีวิว *</label> <input type="text" id="reviewTitle" placeholder="เช่น: เดินทางสะดวก บริการดีเยี่ยม" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:border-transparent form-input" maxlength="100" required>
+       <div class="text-xs text-gray-500 mt-1">
+        สูงสุด 100 ตัวอักษร
+       </div>
+      </div><!-- Review Content -->
+      <div><label for="reviewContent" class="block text-sm font-medium text-gray-700 mb-2">รายละเอียดรีวิว *</label> <textarea id="reviewContent" rows="5" placeholder="เล่าประสบการณ์การเดินทางของคุณ เช่น ความสะดวกสบายของที่นั่ง การบริการของพนักงาน ความตรงต่อเวลา และสิ่งที่ประทับใจหรือควรปรับปรุง" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:border-transparent form-input" maxlength="1000" required></textarea>
+       <div class="text-xs text-gray-500 mt-1">
+        สูงสุด 1,000 ตัวอักษร
+       </div>
+      </div><!-- Pros and Cons -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+       <div><label for="reviewPros" class="block text-sm font-medium text-gray-700 mb-2">จุดเด่น</label> <textarea id="reviewPros" rows="3" placeholder="สิ่งที่ชอบและประทับใจ" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:border-transparent form-input" maxlength="500"></textarea>
+       </div>
+       <div><label for="reviewCons" class="block text-sm font-medium text-gray-700 mb-2">จุดที่ควรปรับปรุง</label> <textarea id="reviewCons" rows="3" placeholder="สิ่งที่ควรปรับปรุงหรือไม่ประทับใจ" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:border-transparent form-input" maxlength="500"></textarea>
+       </div>
+      </div><!-- Recommendation -->
+      <div><label class="block text-sm font-medium text-gray-700 mb-3">คุณจะแนะนำให้เพื่อนใช้บริการนี้หรือไม่?</label>
+       <div class="flex space-x-4"><label class="flex items-center"> <input type="radio" name="recommend" value="yes" class="mr-2 checkbox-input"> <span>👍 แนะนำ</span> </label> <label class="flex items-center"> <input type="radio" name="recommend" value="no" class="mr-2 checkbox-input"> <span>👎 ไม่แนะนำ</span> </label> <label class="flex items-center"> <input type="radio" name="recommend" value="maybe" class="mr-2 checkbox-input"> <span> อาจจะ</span> </label>
+       </div>
+      </div><!-- Reviewer Information -->
+      <div class="border-t pt-6">
+       <h4 class="font-semibold text-gray-900 mb-4">ข้อมูลผู้รีวิว</h4>
+       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div><label for="reviewerName" class="block text-sm font-medium text-gray-700 mb-2">ชื่อที่ใช้แสดง *</label> <input type="text" id="reviewerName" placeholder="ชื่อหรือนามแฝง" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:border-transparent form-input" maxlength="50" required>
+        </div>
+        <div><label for="reviewerAge" class="block text-sm font-medium text-gray-700 mb-2">อายุ</label> <select id="reviewerAge" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:border-transparent form-input"> <option value="">ไม่ระบุ</option> <option value="under-20">ต่ำกว่า 20 ปี</option> <option value="20-30">20-30 ปี</option> <option value="31-40">31-40 ปี</option> <option value="41-50">41-50 ปี</option> <option value="51-60">51-60 ปี</option> <option value="over-60">มากกว่า 60 ปี</option> </select>
+        </div>
+       </div>
+       <div class="mt-4"><label class="flex items-center"> <input type="checkbox" id="anonymousReview" class="mr-2 checkbox-input"> <span class="text-sm text-gray-700">โพสต์แบบไม่ระบุชื่อ (จะแสดงเป็น "ผู้ใช้ไม่ระบุชื่อ")</span> </label>
+       </div>
+      </div><!-- Terms -->
+      <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+       <div class="flex items-start"><input type="checkbox" id="reviewTerms" class="mt-1 mr-3 checkbox-input" required>
+        <div class="text-sm text-yellow-800">
+         <p class="font-medium mb-1">เงื่อนไขการเขียนรีวิว</p>
+         <ul class="list-disc list-inside space-y-1 text-xs">
+          <li>รีวิวต้องเป็นประสบการณ์จริงจากการใช้บริการ</li>
+          <li>ไม่ใช้คำหยาบคายหรือเนื้อหาที่ไม่เหมาะสม</li>
+          <li>ไม่เผยแพร่ข้อมูลส่วนตัวของผู้อื่น</li>
+          <li>บริษัทขอสงวนสิทธิ์ในการตรวจสอบและลบรีวิวที่ไม่เหมาะสม</li>
+         </ul>
+        </div>
+       </div>
+      </div>
+     </form>
+     <div class="flex space-x-4 mt-6"><button id="submitReview" class="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200"> 📝 ส่งรีวิว </button> <button id="cancelReview" class="flex-1 bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-4 rounded-lg transition duration-200"> ยกเลิก </button>
+     </div>
+    </div>
+   </div><!-- User Manual Section -->
+   <div class="mt-12">
+    <div class="text-center mb-8">
+     <h2 class="text-2xl font-bold text-gray-900 mb-4">📖 คู่มือการใช้งานระบบ</h2>
+     <p class="text-gray-600">เรียนรู้วิธีใช้งานระบบจองตั๋วรถทัวร์ออนไลน์อย่างง่ายดาย</p>
+    </div><!-- Manual Navigation -->
+    <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+     <div class="flex flex-wrap justify-center gap-4 mb-6"><button onclick="showManualSection('booking')" class="manual-nav-btn bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-200"> 🎫 การจองตั๋ว </button> <button onclick="showManualSection('identity')" class="manual-nav-btn bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition duration-200"> 🆔 ยืนยันตัวตน </button> <button onclick="showManualSection('payment')" class="manual-nav-btn bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition duration-200"> 💳 การชำระเงิน </button> <button onclick="showManualSection('review')" class="manual-nav-btn bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition duration-200"> ⭐ การรีวิว </button> <button onclick="showManualSection('tips')" class="manual-nav-btn bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition duration-200"> 💡 เทคนิคและคำแนะนำ </button>
+     </div><!-- Booking Manual -->
+     <div id="manual-booking" class="manual-section">
+      <h3 class="text-xl font-bold text-gray-900 mb-6">🎫 คู่มือการจองตั๋ว</h3>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+       <div>
+        <h4 class="text-lg font-semibold text-gray-800 mb-4">ขั้นตอนการจอง</h4>
+        <div class="space-y-4">
+         <div class="flex items-start">
+          <div class="bg-blue-100 text-blue-800 rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3 mt-1">
+           1
+          </div>
+          <div>
+           <div class="font-medium">
+            เลือกต้นทางและปลายทาง
+           </div>
+           <div class="text-sm text-gray-600">
+            เลือกจากเมืองหลักที่มีบริการ เช่น กรุงเทพฯ เชียงใหม่ ภูเก็ต พัทยา นครราชสีมา
+           </div>
+          </div>
+         </div>
+         <div class="flex items-start">
+          <div class="bg-blue-100 text-blue-800 rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3 mt-1">
+           2
+          </div>
+          <div>
+           <div class="font-medium">
+            กำหนดวันที่เดินทาง
+           </div>
+           <div class="text-sm text-gray-600">
+            เลือกวันที่ต้องการเดินทาง (ไม่สามารถเลือกวันที่ผ่านมาแล้ว)
+           </div>
+          </div>
+         </div>
+         <div class="flex items-start">
+          <div class="bg-blue-100 text-blue-800 rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3 mt-1">
+           3
+          </div>
+          <div>
+           <div class="font-medium">
+            ระบุจำนวนผู้โดยสาร
+           </div>
+           <div class="text-sm text-gray-600">
+            เลือกจำนวนผู้โดยสาร 1-5+ คน
+           </div>
+          </div>
+         </div>
+         <div class="flex items-start">
+          <div class="bg-blue-100 text-blue-800 rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3 mt-1">
+           4
+          </div>
+          <div>
+           <div class="font-medium">
+            เลือกความต้องการพิเศษ (ถ้ามี)
+           </div>
+           <div class="text-sm text-gray-600">
+            • ♿ ที่นั่งสำหรับผู้พิการ<br>
+             • 👴 ส่วนลดผู้สูงอายุ 10% (60 ปีขึ้นไป)
+           </div>
+          </div>
+         </div>
+         <div class="flex items-start">
+          <div class="bg-blue-100 text-blue-800 rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3 mt-1">
+           5
+          </div>
+          <div>
+           <div class="font-medium">
+            กดค้นหาเที่ยวรถ
+           </div>
+           <div class="text-sm text-gray-600">
+            ระบบจะแสดงรายการรถที่มีให้เลือก
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div>
+        <h4 class="text-lg font-semibold text-gray-800 mb-4">ประเภทรถและราคา</h4>
+        <div class="space-y-3">
+         <div class="border rounded-lg p-4">
+          <div class="font-medium text-green-700">
+           🚌 ธรรมดา
+          </div>
+          <div class="text-sm text-gray-600 mt-1">
+           • ที่นั่งแบบมาตรฐาน<br>
+            • เครื่องปรับอากาศ<br>
+            • ห้องน้ำ<br>
+            • ราคาเริ่มต้น ฿120-380
+          </div>
+         </div>
+         <div class="border rounded-lg p-4">
+          <div class="font-medium text-blue-700">
+           🛋️ VIP
+          </div>
+          <div class="text-sm text-gray-600 mt-1">
+           • ที่นั่งกว้างขึ้น ปรับนอนได้<br>
+            • WiFi ฟรี<br>
+            • ปลั๊กไฟ จอแสดงผล<br>
+            • ราคาเริ่มต้น ฿450-550
+          </div>
+         </div>
+         <div class="border rounded-lg p-4">
+          <div class="font-medium text-purple-700">
+           👑 Super VIP
+          </div>
+          <div class="text-sm text-gray-600 mt-1">
+           • ที่นั่งหนังแท้ นั่งสบายที่สุด<br>
+            • อาหารว่างและเครื่องดื่ม<br>
+            • ผ้าห่ม หมอน<br>
+            • ราคาเริ่มต้น ฿520+
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="mt-8 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+       <div class="flex items-start"><span class="text-yellow-600 mr-2">💡</span>
+        <div>
+         <div class="font-medium text-yellow-800">
+          เคล็ดลับการจอง
+         </div>
+         <ul class="text-sm text-yellow-700 mt-1 list-disc list-inside">
+          <li>จองล่วงหน้า 1-7 วัน เพื่อความแน่ใจ</li>
+          <li>เช็คสิ่งอำนวยความสะดวกก่อนเลือก</li>
+          <li>ตรวจสอบเวลาออกและถึงให้ดี</li>
+          <li>เตรียมเอกสารยืนยันตัวตนให้พร้อม</li>
+         </ul>
+        </div>
+       </div>
+      </div>
+     </div><!-- Identity Manual -->
+     <div id="manual-identity" class="manual-section hidden">
+      <h3 class="text-xl font-bold text-gray-900 mb-6">🆔 คู่มือการยืนยันตัวตน</h3>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+       <div>
+        <h4 class="text-lg font-semibold text-gray-800 mb-4">ข้อมูลที่ต้องกรอก</h4>
+        <div class="space-y-4">
+         <div class="flex items-start">
+          <div class="bg-green-100 text-green-800 rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3 mt-1">
+           1
+          </div>
+          <div>
+           <div class="font-medium">
+            เลขบัตรประชาชน
+           </div>
+           <div class="text-sm text-gray-600">
+            กรอกเลข 13 หลัก ตรงตามบัตรประชาชน
+           </div>
+          </div>
+         </div>
+         <div class="flex items-start">
+          <div class="bg-green-100 text-green-800 rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3 mt-1">
+           2
+          </div>
+          <div>
+           <div class="font-medium">
+            เบอร์โทรศัพท์
+           </div>
+           <div class="text-sm text-gray-600">
+            กรอกเบอร์ 10 หลัก สำหรับติดต่อกลับ
+           </div>
+          </div>
+         </div>
+         <div class="flex items-start">
+          <div class="bg-green-100 text-green-800 rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3 mt-1">
+           3
+          </div>
+          <div>
+           <div class="font-medium">
+            ชื่อ-นามสกุล
+           </div>
+           <div class="text-sm text-gray-600">
+            กรอกให้ตรงกับบัตรประชาชน
+           </div>
+          </div>
+         </div>
+         <div class="flex items-start">
+          <div class="bg-green-100 text-green-800 rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3 mt-1">
+           4
+          </div>
+          <div>
+           <div class="font-medium">
+            อีเมล
+           </div>
+           <div class="text-sm text-gray-600">
+            สำหรับรับยืนยันการจอง
+           </div>
+          </div>
+         </div>
+         <div class="flex items-start">
+          <div class="bg-green-100 text-green-800 rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3 mt-1">
+           5
+          </div>
+          <div>
+           <div class="font-medium">
+            ยอมรับเงื่อนไข
+           </div>
+           <div class="text-sm text-gray-600">
+            อ่านและยอมรับเงื่อนไขการใช้บริการ
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div>
+        <h4 class="text-lg font-semibold text-gray-800 mb-4">เอกสารและข้อมูล</h4>
+        <div class="space-y-3">
+         <div class="border rounded-lg p-4">
+          <div class="font-medium text-gray-800">
+           📄 เอกสารที่ต้องใช้
+          </div>
+          <div class="text-sm text-gray-600 mt-2">
+           • บัตรประชาชน (13 หลัก)<br>
+            • เบอร์โทรศัพท์ (10 หลัก)<br>
+            • อีเมล<br>
+            • ชื่อ-นามสกุล (ตรงบัตรประชาชน)
+          </div>
+         </div>
+         <div class="border rounded-lg p-4">
+          <div class="font-medium text-gray-800">
+           ⚠️ ข้อควรระวัง
+          </div>
+          <div class="text-sm text-gray-600 mt-2">
+           • กรอกข้อมูลให้ตรงกับบัตรประชาชน<br>
+            • ต้องแสดงบัตรประชาชนในวันเดินทาง<br>
+            • ข้อมูลจะถูกเก็บเป็นความลับ<br>
+            • ใช้สำหรับตรวจสอบตัวตนเท่านั้น
+          </div>
+         </div>
+         <div class="border rounded-lg p-4">
+          <div class="font-medium text-gray-800">
+           ✅ การตรวจสอบ
+          </div>
+          <div class="text-sm text-gray-600 mt-2">
+           • ระบบตรวจสอบเลขบัตรประชาชนอัตโนมัติ<br>
+            • ตรวจสอบรูปแบบเบอร์โทรศัพท์<br>
+            • ตรวจสอบรูปแบบอีเมล<br>
+            • ยืนยันข้อมูลก่อนชำระเงิน
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="mt-8 bg-red-50 border border-red-200 rounded-lg p-4">
+       <div class="flex items-start"><span class="text-red-600 mr-2">🚨</span>
+        <div>
+         <div class="font-medium text-red-800">
+          ข้อมูลสำคัญ
+         </div>
+         <div class="text-sm text-red-700 mt-1">
+          การยืนยันตัวตนเป็นขั้นตอนที่จำเป็นตามกฎหมาย หากข้อมูลไม่ตรงกับเอกสารจริง อาจไม่สามารถขึ้นรถได้ กรุณาตรวจสอบความถูกต้องก่อนยืนยัน
+         </div>
+        </div>
+       </div>
+      </div>
+     </div><!-- Payment Manual -->
+     <div id="manual-payment" class="manual-section hidden">
+      <h3 class="text-xl font-bold text-gray-900 mb-6">💳 คู่มือการชำระเงิน</h3>
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+       <div class="border rounded-lg p-4">
+        <div class="text-center mb-4">
+         <div class="text-3xl mb-2">
+          💳
+         </div>
+         <div class="font-semibold">
+          บัตรเครดิต/เดบิต
+         </div>
+        </div>
+        <div class="space-y-2 text-sm">
+         <div class="font-medium">
+          รองรับ:
+         </div>
+         <div>
+          • Visa, MasterCard, JCB
+         </div>
+         <div>
+          • บัตรเดบิตธนาคารไทย
+         </div>
+         <div class="font-medium mt-3">
+          ข้อมูลที่ต้องกรอก:
+         </div>
+         <div>
+          • หมายเลขบัตร 16 หลัก
+         </div>
+         <div>
+          • วันหมดอายุ (MM/YY)
+         </div>
+         <div>
+          • CVV (3-4 หลัก)
+         </div>
+         <div>
+          • ชื่อบนบัตร
+         </div>
+         <div class="text-green-600 font-medium mt-3">
+          ความปลอดภัย SSL
+         </div>
+        </div>
+       </div>
+       <div class="border rounded-lg p-4">
+        <div class="text-center mb-4">
+         <div class="text-3xl mb-2">
+          📱
+         </div>
+         <div class="font-semibold">
+          QR Code
+         </div>
+        </div>
+        <div class="space-y-2 text-sm">
+         <div class="font-medium">
+          รองรับแอป:
+         </div>
+         <div>
+          • PromptPay
+         </div>
+         <div>
+          • TrueMoney Wallet
+         </div>
+         <div>
+          • SCB Easy
+         </div>
+         <div>
+          • K PLUS
+         </div>
+         <div class="font-medium mt-3">
+          วิธีใช้:
+         </div>
+         <div>
+          1. เลือกวิธี QR Code
+         </div>
+         <div>
+          2. สแกน QR ด้วยแอป
+         </div>
+         <div>
+          3. ยืนยันการชำระ
+         </div>
+         <div class="text-blue-600 font-medium mt-3">
+          ⚡ รวดเร็วทันใจ
+         </div>
+        </div>
+       </div>
+       <div class="border rounded-lg p-4">
+        <div class="text-center mb-4">
+         <div class="text-3xl mb-2">
+          💵
+         </div>
+         <div class="font-semibold">
+          เงินสด
+         </div>
+        </div>
+        <div class="space-y-2 text-sm">
+         <div class="font-medium">
+          สาขาที่รับชำระ:
+         </div>
+         <div>
+          • เคาน์เตอร์หมอชิต
+         </div>
+         <div>
+          • เคาน์เตอร์สายใต้เก่า
+         </div>
+         <div>
+          • เคาน์เตอร์อนุสาวรีย์
+         </div>
+         <div>
+          • เคาน์เตอร์รังสิต
+         </div>
+         <div class="font-medium mt-3">
+          เงื่อนไข:
+         </div>
+         <div>
+          • ชำระภายใน 24 ชม.
+         </div>
+         <div>
+          • นำรหัสจองมาแสดง
+         </div>
+         <div class="text-orange-600 font-medium mt-3">
+          ⏰ จำกัดเวลา
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="mt-8">
+       <h4 class="text-lg font-semibold text-gray-800 mb-4">ขั้นตอนการชำระเงิน</h4>
+       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="space-y-3">
+         <div class="flex items-start">
+          <div class="bg-purple-100 text-purple-800 rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3 mt-1">
+           1
+          </div>
+          <div>
+           <div class="font-medium">
+            เลือกวิธีชำระเงิน
+           </div>
+           <div class="text-sm text-gray-600">
+            คลิกที่วิธีที่ต้องการ
+           </div>
+          </div>
+         </div>
+         <div class="flex items-start">
+          <div class="bg-purple-100 text-purple-800 rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3 mt-1">
+           2
+          </div>
+          <div>
+           <div class="font-medium">
+            กรอกข้อมูลการชำระ
+           </div>
+           <div class="text-sm text-gray-600">
+            ตามวิธีที่เลือก
+           </div>
+          </div>
+         </div>
+         <div class="flex items-start">
+          <div class="bg-purple-100 text-purple-800 rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3 mt-1">
+           3
+          </div>
+          <div>
+           <div class="font-medium">
+            ยืนยันการชำระเงิน
+           </div>
+           <div class="text-sm text-gray-600">
+            กดปุ่มยืนยัน
+           </div>
+          </div>
+         </div>
+         <div class="flex items-start">
+          <div class="bg-purple-100 text-purple-800 rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3 mt-1">
+           4
+          </div>
+          <div>
+           <div class="font-medium">
+            รับรหัสการจอง
+           </div>
+           <div class="text-sm text-gray-600">
+            เก็บไว้สำหรับวันเดินทาง
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+         <div class="font-medium text-blue-800 mb-2">
+          🔒 ความปลอดภัย
+         </div>
+         <ul class="text-sm text-blue-700 space-y-1">
+          <li>• เข้ารหัสข้อมูลด้วย SSL 256-bit</li>
+          <li>• ไม่เก็บข้อมูลบัตรเครดิต</li>
+          <li>• ระบบตรวจสอบการฉ้อโกง</li>
+          <li>• รองรับ 3D Secure</li>
+          <li>• ได้รับการรับรองมาตรฐาน PCI DSS</li>
+         </ul>
+        </div>
+       </div>
+      </div>
+     </div><!-- Review Manual -->
+     <div id="manual-review" class="manual-section hidden">
+      <h3 class="text-xl font-bold text-gray-900 mb-6">⭐ คู่มือการเขียนรีวิว</h3>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+       <div>
+        <h4 class="text-lg font-semibold text-gray-800 mb-4">วิธีเขียนรีวิว</h4>
+        <div class="space-y-4">
+         <div class="flex items-start">
+          <div class="bg-yellow-100 text-yellow-800 rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3 mt-1">
+           1
+          </div>
+          <div>
+           <div class="font-medium">
+            กดปุ่ม "เขียนรีวิว"
+           </div>
+           <div class="text-sm text-gray-600">
+            ในส่วนรีวิวจากผู้ใช้งาน
+           </div>
+          </div>
+         </div>
+         <div class="flex items-start">
+          <div class="bg-yellow-100 text-yellow-800 rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3 mt-1">
+           2
+          </div>
+          <div>
+           <div class="font-medium">
+            กรอกข้อมูลการเดินทาง
+           </div>
+           <div class="text-sm text-gray-600">
+            เส้นทาง, บริษัท, วันที่เดินทาง
+           </div>
+          </div>
+         </div>
+         <div class="flex items-start">
+          <div class="bg-yellow-100 text-yellow-800 rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3 mt-1">
+           3
+          </div>
+          <div>
+           <div class="font-medium">
+            ให้คะแนน
+           </div>
+           <div class="text-sm text-gray-600">
+            คะแนนรวม + คะแนนย่อย 4 หมวด
+           </div>
+          </div>
+         </div>
+         <div class="flex items-start">
+          <div class="bg-yellow-100 text-yellow-800 rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3 mt-1">
+           4
+          </div>
+          <div>
+           <div class="font-medium">
+            เขียนรีวิว
+           </div>
+           <div class="text-sm text-gray-600">
+            หัวข้อ, รายละเอียด, จุดเด่น/ปรับปรุง
+           </div>
+          </div>
+         </div>
+         <div class="flex items-start">
+          <div class="bg-yellow-100 text-yellow-800 rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3 mt-1">
+           5
+          </div>
+          <div>
+           <div class="font-medium">
+            ส่งรีวิว
+           </div>
+           <div class="text-sm text-gray-600">
+            ตรวจสอบและยืนยันการส่ง
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+       <div>
+        <h4 class="text-lg font-semibold text-gray-800 mb-4">หมวดคะแนน</h4>
+        <div class="space-y-3">
+         <div class="border rounded-lg p-3">
+          <div class="font-medium text-blue-700">
+           🛋️ ความสะดวกสบาย
+          </div>
+          <div class="text-sm text-gray-600">
+           ที่นั่ง, พื้นที่, ความสะอาด
+          </div>
+         </div>
+         <div class="border rounded-lg p-3">
+          <div class="font-medium text-green-700">
+           ⏰ ความตรงต่อเวลา
+          </div>
+          <div class="text-sm text-gray-600">
+           การออกเดินทาง, การมาถึง
+          </div>
+         </div>
+         <div class="border rounded-lg p-3">
+          <div class="font-medium text-purple-700">
+           👥 การบริการ
+          </div>
+          <div class="text-sm text-gray-600">
+           พนักกงาน, ความช่วยเหลือ
+          </div>
+         </div>
+         <div class="border rounded-lg p-3">
+          <div class="font-medium text-orange-700">
+           💰 ความคุ้มค่า
+          </div>
+          <div class="text-sm text-gray-600">
+           ราคาเทียบกับคุณภาพ
+          </div>
+         </div>
+        </div>
+        <div class="mt-6 bg-green-50 border border-green-200 rounded-lg p-4">
+         <div class="font-medium text-green-800 mb-2">
+          💡 เคล็ดลับรีวิวดี
+         </div>
+         <ul class="text-sm text-green-700 space-y-1">
+          <li>• เขียนจากประสบการณ์จริง</li>
+          <li>• ระบุรายละเอียดที่เป็นประโยชน์</li>
+          <li>• แยกจุดเด่น/จุดปรับปรุงชัดเจน</li>
+          <li>• ใช้ภาษาสุภาพ</li>
+          <li>• ให้คะแนนตรงตามความรู้สึก</li>
+         </ul>
+        </div>
+       </div>
+      </div>
+      <div class="mt-8">
+       <h4 class="text-lg font-semibold text-gray-800 mb-4">การดูและกรองรีวิว</h4>
+       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="border rounded-lg p-4">
+         <div class="font-medium text-gray-800 mb-2">
+          🔍 การกรอง
+         </div>
+         <div class="text-sm text-gray-600">
+          • กรองตามคะแนน (1-5 ดาว)<br>
+           • กรองตามเส้นทาง<br>
+           • เรียงตามความใหม่/เก่า<br>
+           • เรียงตามความมีประโยชน์
+         </div>
+        </div>
+        <div class="border rounded-lg p-4">
+         <div class="font-medium text-gray-800 mb-2">
+          👍 การโต้ตอบ
+         </div>
+         <div class="text-sm text-gray-600">
+          • กดปุ่ม "มีประโยชน์"<br>
+           • รายงานรีวิวที่ไม่เหมาะสม<br>
+           • ดูคะแนนย่อยแต่ละหมวด<br>
+           • อ่านจุดเด่น/ปรับปรุง
+         </div>
+        </div>
+        <div class="border rounded-lg p-4">
+         <div class="font-medium text-gray-800 mb-2">
+          📊 สถิติ
+         </div>
+         <div class="text-sm text-gray-600">
+          • จำนวนรีวิวทั้งหมด<br>
+           • คะแนนเฉลี่ย<br>
+           • อัตราความพึงพอใจ<br>
+           • การกระจายคะแนน
+         </div>
+        </div>
+       </div>
+      </div>
+     </div><!-- Tips Manual -->
+     <div id="manual-tips" class="manual-section hidden">
+      <h3 class="text-xl font-bold text-gray-900 mb-6">💡 เทคนิคและคำแนะนำ</h3>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+       <div>
+        <h4 class="text-lg font-semibold text-gray-800 mb-4">เทคนิคการจอง</h4>
+        <div class="space-y-4">
+         <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <div class="font-medium text-blue-800 mb-2">
+           🎯 เลือกเวลาที่เหมาะสม
+          </div>
+          <ul class="text-sm text-blue-700 space-y-1">
+           <li>• เช้า (06:00-10:00): เหมาะกับการเดินทางธุรกิจ</li>
+           <li>• บ่า (14:00-18:00): เหมาะกับการท่องเที่ยว</li>
+           <li>• ค่ำ (20:00-24:00): ประหยัดเวลา นอนได้ตลอดทาง</li>
+          </ul>
+         </div>
+         <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+          <div class="font-medium text-green-800 mb-2">
+           💰 ประหยัดค่าใช้จ่าย
+          </div>
+          <ul class="text-sm text-green-700 space-y-1">
+           <li>• จองล่วงหน้าได้ส่วนลด</li>
+           <li>• เลือกวันธรรมดาแทนวันหยุด</li>
+           <li>• ใช้ส่วนลดผู้สูงอายุ (ถ้ามีสิทธิ์)</li>
+           <li>• เปรียบเทียบราคาหลายบริษัท</li>
+          </ul>
+         </div>
+         <div class="bg-purple-50 border border-purple-200 rounded-lg p-4">
+          <div class="font-medium text-purple-800 mb-2">
+           🎫 การเลือกที่นั่ง
+          </div>
+          <ul class="text-sm text-purple-700 space-y-1">
+           <li>• ด้านหน้า: ขึ้น-ลงสะดวก แต่อาจเสียงดัง</li>
+           <li>• กลางรถ: สมดุล สั่นสะเทือนน้อย</li>
+           <li>• ด้านหลัง: เงียบ แต่อาจเมารถ</li>
+           <li>• ข้างหน้าต่าง: ชมวิวได้</li>
+          </ul>
+         </div>
+        </div>
+       </div>
+       <div>
+        <h4 class="text-lg font-semibold text-gray-800 mb-4">การเตรียมตัวการเดินทาง</h4>
+        <div class="space-y-4">
+         <div class="bg-orange-50 border border-orange-200 rounded-lg p-4">
+          <div class="font-medium text-orange-800 mb-2">
+           🎒 สิ่งของที่ควรเตรียม
+          </div>
+          <ul class="text-sm text-orange-700 space-y-1">
+           <li>• บัตรประชาชน (จำเป็น)</li>
+           <li>• ผ้าห่มเสื้อแจ็คเก็ต</li>
+           <li>• หูฟัง สำหรับดูหนัง/ฟังเพลง</li>
+           <li>• ยาประจำตัว (ถ้ามี)</li>
+           <li>• ขนมหรือน้ำดื่ม</li>
+           <li>• Power Bank สำหรับชาร์จมือถือ</li>
+          </ul>
+         </div>
+         <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+          <div class="font-medium text-red-800 mb-2">
+           ⚠️ ข้อควรระวัง
+          </div>
+          <ul class="text-sm text-red-700 space-y-1">
+           <li>• มาก่อนเวลาออกรถ 30 นาที</li>
+           <li>• เก็บของมีค่าไว้กับตัว</li>
+           <li>• ไม่นำของผิดกฎหมายขึ้นรถ</li>
+           <li>• แจ้งคนใกล้ชิดเรื่องการเดินทาง</li>
+           <li>• เช็คสภาพอากาศปลายทาง</li>
+          </ul>
+         </div>
+         <div class="bg-teal-50 border border-teal-200 rounded-lg p-4">
+          <div class="font-medium text-teal-800 mb-2">
+           📱 แอปที่มีประโยชน์
+          </div>
+          <ul class="text-sm text-teal-700 space-y-1">
+           <li>• Google Maps: ดูเส้นทาง</li>
+           <li>• Netflix/YouTube: ดูหนัง/คลิป</li>
+           <li>• Spotify: ฟังเพลง</li>
+           <li>• Grab/Bolt: เรียกรถจากสถานี</li>
+           <li>• Agoda/Booking: จองที่พัก</li>
+          </ul>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="mt-8">
+       <h4 class="text-lg font-semibold text-gray-800 mb-4">คำถามที่พบบ่อย (FAQ)</h4>
+       <div class="space-y-4">
+        <div class="border rounded-lg p-4">
+         <div class="font-medium text-gray-800 mb-2">
+          ❓ สามารถยกเลิกหรือเปลี่ยนแปลงการจองได้หรือไม่?
+         </div>
+         <div class="text-sm text-gray-600">
+          ขึ้นอยู่กับเงื่อนไขของแต่ละบริษัท โดยทั่วไปสามารถยกเลิกได้ก่อนเวลาออกรถ 2-24 ชั่วโมง อาจมีค่าธรรมเนียม กรุณาต่อบริษัทขนส่งโดยตรง
+         </div>
+        </div>
+        <div class="border rounded-lg p-4">
+         <div class="font-medium text-gray-800 mb-2">
+          ❓ หากมาสายหรือพลาดรถจะทำอย่างไร?
+         </div>
+         <div class="text-sm text-gray-600">
+          ติดต่อบริษัทขนส่งทันที อาจสามารถขึ้นเที่ยวถัดไปได้ (อาจมีค่าใช้จ่ายเพิ่ม) หรือขอคืนเงินบางส่วนตามเงื่อนไข
+         </div>
+        </div>
+        <div class="border rounded-lg p-4">
+         <div class="font-medium text-gray-800 mb-2">
+          ❓ สามารถนำสัตว์เลิ้ยงขึ้นรถได้หรือไม่?
+         </div>
+         <div class="text-sm text-gray-600">
+          ส่วนใหญ่ไม่อนุญาต ยกเว้นสุนัขนำทางสำหรับผู้พิการ กรุณาสอบถามบริษัทขนส่งล่วงหน้า
+         </div>
+        </div>
+        <div class="border rounded-lg p-4">
+         <div class="font-medium text-gray-800 mb-2">
+          ❓ มีข้อจำกัดเรื่องน้ำหนักกระเป๋าหรือไม่?
+         </div>
+         <div class="text-sm text-gray-600">
+          โดยทั่วไปอนุญาต 20-30 กก. ต่อคน กระเป๋าใหญ่เก็บใต้ท้องรถ กระเป๋าเล็กเก็บบนรถได้
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div><!-- Quick Help -->
+    <div class="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-xl p-6 mt-8">
+     <div class="text-center">
+      <h4 class="text-lg font-semibold text-gray-900 mb-4">🆘 ต้องการความช่วยเหลือเพิ่มเติม?</h4>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+       <div class="bg-white rounded-lg p-4 shadow-sm">
+        <div class="text-2xl mb-2">
+         📞
+        </div>
+        <div class="font-medium">
+         โทรศัพท์
+        </div>
+        <div class="text-sm text-gray-600">
+         02-123-4567
+        </div>
+        <div class="text-xs text-gray-500">
+         24 ชั่วโมง
+        </div>
+       </div>
+       <div class="bg-white rounded-lg p-4 shadow-sm">
+        <div class="text-2xl mb-2">
+         💬
+        </div>
+        <div class="font-medium">
+         Live Chat
+        </div>
+        <div class="text-sm text-gray-600">
+         แชทสด
+        </div>
+        <div class="text-xs text-gray-500">
+         06:00-24:00
+        </div>
+       </div>
+       <div class="bg-white rounded-lg p-4 shadow-sm">
+        <div class="text-2xl mb-2">
+         📧
+        </div>
+        <div class="font-medium">
+         อีเมล
+        </div>
+        <div class="text-sm text-gray-600">
+         support@busticket.com
+        </div>
+        <div class="text-xs text-gray-500">
+         ตอบภายใน 24 ชม.
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div><!-- Popular Routes -->
+   <div class="mt-12">
+    <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">เส้นทางยอดนิยม</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="popularRoutes">
+     <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition duration-200">
+      <div class="text-lg font-semibold text-gray-900 mb-2">
+       กรุงเทพฯ - เชียงใหม่
+      </div>
+      <div class="text-gray-600 mb-3">
+       เวลาเดินทาง: 10-12 ชั่วโมง
+      </div>
+      <div class="font-bold text-xl popular-price">
+       เริ่มต้น ฿450
+      </div>
+     </div>
+     <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition duration-200">
+      <div class="text-lg font-semibold text-gray-900 mb-2">
+       กรุงเทพฯ - ภูเก็ต
+      </div>
+      <div class="text-gray-600 mb-3">
+       เวลาเดินทาง: 12-14 ชั่วโมง
+      </div>
+      <div class="font-bold text-xl popular-price">
+       เริ่มต้น ฿550
+      </div>
+     </div>
+     <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition duration-200">
+      <div class="text-lg font-semibold text-gray-900 mb-2">
+       กรุงเทพฯ - พัทยา
+      </div>
+      <div class="text-gray-600 mb-3">
+       เวลาเดินทาง: 2-3 ชั่วโมง
+      </div>
+      <div class="font-bold text-xl popular-price">
+       เริ่มต้น ฿120
+      </div>
+     </div>
+    </div>
+   </div>
+  </main>
+  <footer class="bg-gray-800 text-white mt-16" id="footer">
+   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="text-center">
+     <div class="text-2xl font-bold mb-4" id="footerTitle">
+      🚌 BusTicket
+     </div>
+     <p class="text-gray-400" id="footerDescription">บริการจองตั๋วรถทัวร์ออนไลน์ที่เชื่อถือได้</p>
+     <div class="mt-4 text-sm text-gray-500" id="copyrightText">
+      © 2024 BusTicket. สงวนลิขสิทธิ์.
+     </div>
+    </div>
+   </div>
+  </footer>
+  <script>
+        // Configuration object - Default to purple-gold theme
+        const defaultConfig = {
+            site_title: "🚌 BusTicket",
+            main_heading: "จองตั๋วรถทัวร์ออนไลน์",
+            subheading: "เดินทางสะดวก ปลอดภัย ราคาประหยัด",
+            footer_description: "บริการจองตั๋วรถทัวร์ออนไลน์ที่เชื่อถือได้",
+            copyright_text: "© 2024 BusTicket. สงวนลิขสิทธิ์.",
+            theme_color: "#7c3aed",
+            theme_hover_color: "#6d28d9",
+            theme_bg_from: "#fef3c7",
+            theme_bg_to: "#e9d5ff",
+            theme_border_color: "#d97706",
+            theme_text_color: "#d97706"
+        };
+
+
+
+        // Apply theme colors to UI
+        function applyTheme(config) {
+            const body = document.getElementById('mainBody');
+            body.style.background = `linear-gradient(to bottom right, ${config.theme_bg_from || defaultConfig.theme_bg_from}, ${config.theme_bg_to || defaultConfig.theme_bg_to})`;
+            
+            const siteTitle = document.getElementById('siteTitle');
+            siteTitle.style.color = config.theme_color || defaultConfig.theme_color;
+            
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('mouseenter', function() {
+                    this.style.color = config.theme_color || defaultConfig.theme_color;
+                });
+                link.addEventListener('mouseleave', function() {
+                    this.style.color = '#374151';
+                });
+            });
+            
+            const formInputs = document.querySelectorAll('.form-input');
+            formInputs.forEach(input => {
+                input.style.setProperty('--focus-ring-color', config.theme_color || defaultConfig.theme_color);
+                input.addEventListener('focus', function() {
+                    this.style.borderColor = config.theme_color || defaultConfig.theme_color;
+                    this.style.boxShadow = `0 0 0 3px ${config.theme_color || defaultConfig.theme_color}33`;
+                });
+                input.addEventListener('blur', function() {
+                    this.style.borderColor = '#d1d5db';
+                    this.style.boxShadow = 'none';
+                });
+            });
+            
+            const checkboxes = document.querySelectorAll('.checkbox-input');
+            checkboxes.forEach(checkbox => {
+                checkbox.style.setProperty('--checkbox-color', config.theme_color || defaultConfig.theme_color);
+                checkbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        this.style.backgroundColor = config.theme_color || defaultConfig.theme_color;
+                        this.style.borderColor = config.theme_color || defaultConfig.theme_color;
+                    }
+                });
+            });
+            
+            const primaryButton = document.querySelector('.primary-button');
+            if (primaryButton) {
+                primaryButton.style.backgroundColor = config.theme_color || defaultConfig.theme_color;
+                primaryButton.style.color = 'white';
+                primaryButton.addEventListener('mouseenter', function() {
+                    this.style.backgroundColor = config.theme_hover_color || defaultConfig.theme_hover_color;
+                });
+                primaryButton.addEventListener('mouseleave', function() {
+                    this.style.backgroundColor = config.theme_color || defaultConfig.theme_color;
+                });
+            }
+            
+            const secondaryButton = document.querySelector('.secondary-button');
+            if (secondaryButton) {
+                secondaryButton.style.backgroundColor = config.theme_color || defaultConfig.theme_color;
+                secondaryButton.style.color = 'white';
+                secondaryButton.addEventListener('mouseenter', function() {
+                    this.style.backgroundColor = config.theme_hover_color || defaultConfig.theme_hover_color;
+                });
+                secondaryButton.addEventListener('mouseleave', function() {
+                    this.style.backgroundColor = config.theme_color || defaultConfig.theme_color;
+                });
+            }
+            
+            const popularPrices = document.querySelectorAll('.popular-price');
+            popularPrices.forEach(price => {
+                price.style.color = config.theme_text_color || defaultConfig.theme_text_color;
+            });
+            
+            const themeLinks = document.querySelectorAll('.theme-link');
+            themeLinks.forEach(link => {
+                link.style.color = config.theme_text_color || defaultConfig.theme_text_color;
+            });
+            
+            const faceSection = document.getElementById('faceSection');
+            if (faceSection) {
+                faceSection.style.backgroundColor = `${config.theme_bg_from || defaultConfig.theme_bg_from}`;
+                faceSection.style.borderColor = `${config.theme_border_color || defaultConfig.theme_border_color}`;
+            }
+            
+            const faceSectionTitle = document.getElementById('faceSectionTitle');
+            if (faceSectionTitle) {
+                faceSectionTitle.style.color = config.theme_text_color || defaultConfig.theme_text_color;
+            }
+            
+            const faceInstructions = document.getElementById('faceInstructions');
+            if (faceInstructions) {
+                faceInstructions.style.color = config.theme_text_color || defaultConfig.theme_text_color;
+            }
+        }
+
+        // Apply text content
+        function applyTextContent(config) {
+            document.getElementById('siteTitle').textContent = config.site_title || defaultConfig.site_title;
+            document.getElementById('mainHeading').textContent = config.main_heading || defaultConfig.main_heading;
+            document.getElementById('subHeading').textContent = config.subheading || defaultConfig.subheading;
+            document.getElementById('footerTitle').textContent = config.site_title || defaultConfig.site_title;
+            document.getElementById('footerDescription').textContent = config.footer_description || defaultConfig.footer_description;
+            document.getElementById('copyrightText').textContent = config.copyright_text || defaultConfig.copyright_text;
+        }
+
+
+
+        // Initialize Element SDK
+        if (window.elementSdk) {
+            window.elementSdk.init({
+                defaultConfig: defaultConfig,
+                onConfigChange: async (config) => {
+                    applyTheme(config);
+                    applyTextContent(config);
+                },
+                mapToCapabilities: (config) => ({
+                    recolorables: [
+                        {
+                            get: () => config.theme_color || defaultConfig.theme_color,
+                            set: (value) => {
+                                config.theme_color = value;
+                                window.elementSdk.setConfig({ theme_color: value });
+                            }
+                        },
+                        {
+                            get: () => config.theme_bg_from || defaultConfig.theme_bg_from,
+                            set: (value) => {
+                                config.theme_bg_from = value;
+                                window.elementSdk.setConfig({ theme_bg_from: value });
+                            }
+                        },
+                        {
+                            get: () => config.theme_bg_to || defaultConfig.theme_bg_to,
+                            set: (value) => {
+                                config.theme_bg_to = value;
+                                window.elementSdk.setConfig({ theme_bg_to: value });
+                            }
+                        },
+                        {
+                            get: () => config.theme_text_color || defaultConfig.theme_text_color,
+                            set: (value) => {
+                                config.theme_text_color = value;
+                                window.elementSdk.setConfig({ theme_text_color: value });
+                            }
+                        },
+                        {
+                            get: () => config.theme_hover_color || defaultConfig.theme_hover_color,
+                            set: (value) => {
+                                config.theme_hover_color = value;
+                                window.elementSdk.setConfig({ theme_hover_color: value });
+                            }
+                        }
+                    ],
+                    borderables: [],
+                    fontEditable: undefined,
+                    fontSizeable: undefined
+                }),
+                mapToEditPanelValues: (config) => new Map([
+                    ["site_title", config.site_title || defaultConfig.site_title],
+                    ["main_heading", config.main_heading || defaultConfig.main_heading],
+                    ["subheading", config.subheading || defaultConfig.subheading],
+                    ["footer_description", config.footer_description || defaultConfig.footer_description],
+                    ["copyright_text", config.copyright_text || defaultConfig.copyright_text]
+                ])
+            });
+        }
+
+        // Apply initial theme
+        applyTheme(defaultConfig);
+        applyTextContent(defaultConfig);
+
+        // Sample reviews data
+        const sampleReviews = [
+            {
+                id: 1,
+                route: "bangkok-chiangmai",
+                routeText: "กรุงเทพฯ - เชียงใหม่",
+                company: "บริษัท ขนส่ง A",
+                rating: 5,
+                title: "เดินทางสะดวก บริการดีเยี่ยม",
+                content: "ประทับใจมากครับ รถสะอาด ที่นั่งสบาย พนักงานบริการดี ออกตรงเวลา ถึงปลายทางตามกำหนด แนะนำเลยครับ",
+                pros: "รถสะอาด, ที่นั่งสบาย, ตรงเวลา",
+                cons: "ไม่มีอะไรให้ติ",
+                recommend: "yes",
+                reviewerName: "สมชาย ใจดี",
+                reviewerAge: "31-40",
+                date: "2024-01-15",
+                helpful: 24,
+                verified: true,
+                comfort: 5,
+                punctuality: 5,
+                service: 5,
+                value: 4
+            },
+            {
+                id: 2,
+                route: "bangkok-phuket",
+                routeText: "กรุงเทพฯ - ภูเก็ต",
+                company: "บริษัท ขนส่ง B",
+                rating: 4,
+                title: "โอเค ราคาดี",
+                content: "โดยรวมดีครับ ราคาไม่แพง รถก็โอเค แต่ที่นั่งอาจจะแข็งไปหน่อย เดินทางไกลแล้วนั่งนานๆ เมื่อยหลังนิดหน่อย",
+                pros: "ราคาดี, รถสะอาด",
+                cons: "ที่นั่งแข็งไปหน่อย",
+                recommend: "yes",
+                reviewerName: "มาลี สวยงาม",
+                reviewerAge: "20-30",
+                date: "2024-01-10",
+                helpful: 18,
+                verified: true,
+                comfort: 3,
+                punctuality: 4,
+                service: 4,
+                value: 5
+            },
+            {
+                id: 3,
+                route: "bangkok-pattaya",
+                routeText: "กรุงเทพฯ - พัทยา",
+                company: "บริษัท ขนส่ง C",
+                rating: 5,
+                title: "Super VIP คุ้มค่ามาก",
+                content: "จ่ายเพิ่มนิดหน่อยได้ Super VIP ที่นั่งกว้าง นอนได้เต็มที่ มีอาหารว่างและเครื่องดื่ม WiFi เร็ว ห้องน้ำสะอาด คุ้มค่ามากครับ",
+                pros: "ที่นั่งกว้าง, มีอาหารว่าง, WiFi เร็ว, ห้องน้ำสะอาด",
+                cons: "",
+                recommend: "yes",
+                reviewerName: "ประยุทธ์ เที่ยวเก่ง",
+                reviewerAge: "41-50",
+                date: "2024-01-08",
+                helpful: 31,
+                verified: true,
+                comfort: 5,
+                punctuality: 5,
+                service: 5,
+                value: 5
+            },
+            {
+                id: 4,
+                route: "bangkok-chiangmai",
+                routeText: "กรุงเทพฯ - เชียงใหม่",
+                company: "บริษัท ขนส่ง B",
+                rating: 3,
+                title: "ธรรมดา ไม่มีอะไรพิเศษ",
+                content: "ก็โอเคครับ ราคาถูก แต่รถเก่าไปหน่อย เครื่องปรับอากาศไม่ค่อยเย็น ที่นั่งก็ธรรมดา เหมาะกับคนที่ประหยัด",
+                pros: "ราคาถูก",
+                cons: "รถเก่า, แอร์ไม่เย็น",
+                recommend: "maybe",
+                reviewerName: "สมศักดิ์ ประหยัด",
+                reviewerAge: "51-60",
+                date: "2024-01-05",
+                helpful: 12,
+                verified: true,
+                comfort: 2,
+                punctuality: 3,
+                service: 3,
+                value: 4
+            },
+            {
+                id: 5,
+                route: "bangkok-korat",
+                routeText: "กรุงเทพฯ - นครราชสีมา",
+                company: "บริษัท ขนส่ง A",
+                rating: 4,
+                title: "ดีครับ แนะนำ",
+                content: "บริการดี รถสะอาด พนักงานสุภาพ ออกตรงเวลา ราคาสมเหตุสมผล  แบบนี้เหมาะมาก",
+                pros: "บริการดี, ตรงเวลา, ราคาดี",
+                cons: "ไม่มี WiFi",
+                recommend: "yes",
+                reviewerName: "อนุชา ชอบเที่ยว",
+                reviewerAge: "20-30",
+                date: "2024-01-03",
+                helpful: 15,
+                verified: true,
+                comfort: 4,
+                punctuality: 5,
+                service: 4,
+                value: 4
+            },
+            {
+                id: 6,
+                route: "bangkok-phuket",
+                routeText: "กรุงเทพฯ - ภูเก็ต",
+                company: "บริษัท ขนส่ง A",
+                rating: 5,
+                title: "ประทับใจมาก จะใช้บริการอีก",
+                content: "VIP จริงๆ ครับ ที่นั่งหนังแท้ นั่งสบายมาก มีผ้าห่ม หมอน อาหารว่างอร่อย เครื่องดื่มหลากหลาย พนักงานใส่ใจ แนะนำเลยครับ",
+                pros: "ที่นั่งหนังแท้, อาหารอร่อย, พนักงานดี",
+                cons: "ราคาแพงหน่อย",
+                recommend: "yes",
+                reviewerName: "วิชัย รวยมาก",
+                reviewerAge: "41-50",
+                date: "2024-01-01",
+                helpful: 28,
+                verified: true,
+                comfort: 5,
+                punctuality: 5,
+                service: 5,
+                value: 4
+            }
+        ];
+
+        let currentReviews = [...sampleReviews];
+        let displayedReviews = [];
+        let reviewsPerPage = 3;
+        let currentPage = 0;
+
+        // Initialize reviews
+        function initializeReviews() {
+            displayedReviews = currentReviews.slice(0, reviewsPerPage);
+            renderReviews();
+            updateLoadMoreButton();
+        }
+
+        // Render reviews
+        function renderReviews() {
+            const reviewsList = document.getElementById('reviewsList');
+            reviewsList.innerHTML = '';
+
+            displayedReviews.forEach(review => {
+                const reviewCard = createReviewCard(review);
+                reviewsList.appendChild(reviewCard);
+            });
+        }
+
+        // Create review card
+        function createReviewCard(review) {
+            const card = document.createElement('div');
+            card.className = 'bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition duration-200 fade-in';
+
+            const stars = '⭐'.repeat(review.rating) + '☆'.repeat(5 - review.rating);
+            const verifiedBadge = review.verified ? '<span class="ml-2 text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">✓ ยืนยันแล้ว</span>' : '';
+            
+            const prosHtml = review.pros ? `
+                <div class="mb-2">
+                    <span class="text-sm font-medium text-green-700">👍 จุดเด่น:</span>
+                    <span class="text-sm text-gray-700">${review.pros}</span>
+                </div>
+            ` : '';
+            
+            const consHtml = review.cons ? `
+                <div class="mb-2">
+                    <span class="text-sm font-medium text-red-700">👎 จุดที่ควรปรับปรุง:</span>
+                    <span class="text-sm text-gray-700">${review.cons}</span>
+                </div>
+            ` : '';
+
+            const recommendText = {
+                'yes': '👍 แนะนำ',
+                'no': '👎 ไม่แนะนำ',
+                'maybe': '🤔 อาจจะ'
+            };
+
+            card.innerHTML = `
+                <div class="flex flex-col md:flex-row md:items-start md:justify-between mb-4">
+                    <div class="flex-1">
+                        <div class="flex items-center mb-2">
+                            <div class="text-yellow-400 text-lg mr-2">${stars}</div>
+                            <span class="text-sm text-gray-500">${review.rating}/5</span>
+                            ${verifiedBadge}
+                        </div>
+                        <h4 class="text-lg font-semibold text-gray-900 mb-2">${review.title}</h4>
+                        <div class="text-sm text-gray-600 mb-2">
+                            <span class="font-medium">${review.routeText}</span> • 
+                            <span>${review.company}</span> • 
+                            <span>${formatDate(review.date)}</span>
+                        </div>
+                    </div>
+                    <div class="mt-2 md:mt-0 md:ml-4">
+                        <div class="text-sm text-gray-600">โดย: ${review.reviewerName}</div>
+                        <div class="text-xs text-gray-500">${getAgeText(review.reviewerAge)}</div>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <p class="text-gray-700 leading-relaxed">${review.content}</p>
+                </div>
+                
+                ${prosHtml}
+                ${consHtml}
+                
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4 text-sm">
+                    <div class="text-center">
+                        <div class="text-xs text-gray-500">ความสะดวกสบาย</div>
+                        <div class="text-yellow-400">${'⭐'.repeat(review.comfort)}${'☆'.repeat(5 - review.comfort)}</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-xs text-gray-500">ความตรงต่อเวลา</div>
+                        <div class="text-yellow-400">${'⭐'.repeat(review.punctuality)}${'☆'.repeat(5 - review.punctuality)}</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-xs text-gray-500">การบริการ</div>
+                        <div class="text-yellow-400">${'⭐'.repeat(review.service)}${'☆'.repeat(5 - review.service)}</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-xs text-gray-500">ความคุ้มค่า</div>
+                        <div class="text-yellow-400">${'⭐'.repeat(review.value)}${'☆'.repeat(5 - review.value)}</div>
+                    </div>
+                </div>
+                
+                <div class="flex items-center justify-between pt-4 border-t">
+                    <div class="flex items-center space-x-4">
+                        <span class="text-sm text-gray-600">${recommendText[review.recommend]}</span>
+                        <button onclick="toggleHelpful(${review.id})" class="text-sm text-blue-600 hover:text-blue-800 transition duration-200">
+                            👍 มีประโยชน์ (${review.helpful})
+                        </button>
+                    </div>
+                    <button onclick="reportReview(${review.id})" class="text-xs text-gray-500 hover:text-red-600 transition duration-200">
+                        🚩 รายงาน
+                    </button>
+                </div>
+            `;
+
+            return card;
+        }
+
+        // Helper functions
+        function getAgeText(ageRange) {
+            const ageTexts = {
+                'under-20': 'ต่ำกว่า 20 ปี',
+                '20-30': '20-30 ปี',
+                '31-40': '31-40 ปี',
+                '41-50': '41-50 ปี',
+                '51-60': '51-60 ปี',
+                'over-60': 'มากกว่า 60 ปี'
+            };
+            return ageTexts[ageRange] || 'ไม่ระบุอายุ';
+        }
+
+        function toggleHelpful(reviewId) {
+            const review = currentReviews.find(r => r.id === reviewId);
+            if (review) {
+                review.helpful += 1;
+                renderReviews();
+                showMessage('ขอบคุณสำหรับการโหวต!', 'success');
+            }
+        }
+
+        function reportReview(reviewId) {
+            showMessage('รายงานรีวิวเรียบร้อย ทีมงานจะตรวจสอบภายใน 24 ชั่วโมง', 'success');
+        }
+
+        // Load more reviews
+        function loadMoreReviews() {
+            currentPage++;
+            const startIndex = currentPage * reviewsPerPage;
+            const endIndex = startIndex + reviewsPerPage;
+            const newReviews = currentReviews.slice(startIndex, endIndex);
+            
+            displayedReviews = [...displayedReviews, ...newReviews];
+            renderReviews();
+            updateLoadMoreButton();
+        }
+
+        function updateLoadMoreButton() {
+            const loadMoreBtn = document.getElementById('loadMoreReviews');
+            const hasMore = displayedReviews.length < currentReviews.length;
+            
+            if (hasMore) {
+                loadMoreBtn.style.display = 'block';
+                loadMoreBtn.textContent = `โหลดรีวิวเพิ่มเติม (เหลือ ${currentReviews.length - displayedReviews.length} รีวิว)`;
+            } else {
+                loadMoreBtn.style.display = 'none';
+            }
+        }
+
+        // Filter reviews
+        function filterReviews() {
+            const ratingFilter = document.getElementById('ratingFilter').value;
+            const routeFilter = document.getElementById('routeFilter').value;
+            const sortFilter = document.getElementById('sortFilter').value;
+
+            let filtered = [...sampleReviews];
+
+            // Apply rating filter
+            if (ratingFilter) {
+                filtered = filtered.filter(review => review.rating === parseInt(ratingFilter));
+            }
+
+            // Apply route filter
+            if (routeFilter) {
+                filtered = filtered.filter(review => review.route === routeFilter);
+            }
+
+            // Apply sorting
+            switch (sortFilter) {
+                case 'newest':
+                    filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+                    break;
+                case 'oldest':
+                    filtered.sort((a, b) => new Date(a.date) - new Date(b.date));
+                    break;
+                case 'highest':
+                    filtered.sort((a, b) => b.rating - a.rating);
+                    break;
+                case 'lowest':
+                    filtered.sort((a, b) => a.rating - b.rating);
+                    break;
+                case 'helpful':
+                    filtered.sort((a, b) => b.helpful - a.helpful);
+                    break;
+            }
+
+            currentReviews = filtered;
+            currentPage = 0;
+            displayedReviews = currentReviews.slice(0, reviewsPerPage);
+            renderReviews();
+            updateLoadMoreButton();
+        }
+
+        // Review form handling
+        let selectedOverallRating = 0;
+        let selectedDetailedRatings = {
+            comfort: 0,
+            punctuality: 0,
+            service: 0,
+            value: 0
+        };
+
+        // Star rating handlers
+        function setupStarRatings() {
+            // Overall rating
+            const overallStars = document.querySelectorAll('#overallStars .star');
+            overallStars.forEach(star => {
+                star.addEventListener('click', function() {
+                    selectedOverallRating = parseInt(this.dataset.rating);
+                    document.getElementById('overallRating').value = selectedOverallRating;
+                    
+                    // Update visual feedback
+                    overallStars.forEach((s, index) => {
+                        if (index < selectedOverallRating) {
+                            s.classList.remove('text-gray-300');
+                            s.classList.add('text-yellow-400');
+                        } else {
+                            s.classList.remove('text-yellow-400');
+                            s.classList.add('text-gray-300');
+                        }
+                    });
+                    
+                    // Update rating text
+                    const ratingTexts = ['', 'แย่มาก', 'แย่', 'ปานกลาง', 'ดี', 'ดีเยี่ยม'];
+                    document.getElementById('ratingText').textContent = ratingTexts[selectedOverallRating];
+                });
+            });
+
+            // Detailed ratings
+            document.querySelectorAll('.rating-group').forEach(group => {
+                const category = group.dataset.category;
+                const stars = group.querySelectorAll('.mini-star');
+                
+                stars.forEach(star => {
+                    star.addEventListener('click', function() {
+                        const rating = parseInt(this.dataset.rating);
+                        selectedDetailedRatings[category] = rating;
+                        document.getElementById(category + 'Rating').value = rating;
+                        
+                        // Update visual feedback
+                        stars.forEach((s, index) => {
+                            if (index < rating) {
+                                s.classList.remove('text-gray-300');
+                                s.classList.add('text-yellow-400');
+                            } else {
+                                s.classList.remove('text-yellow-400');
+                                s.classList.add('text-gray-300');
+                            }
+                        });
+                    });
+                });
+            });
+        }
+
+        // Event listeners
+        document.getElementById('writeReviewBtn').addEventListener('click', function() {
+            document.getElementById('reviewModal').classList.remove('hidden');
+            setupStarRatings();
+        });
+
+        document.getElementById('cancelReview').addEventListener('click', function() {
+            document.getElementById('reviewModal').classList.add('hidden');
+            resetReviewForm();
+        });
+
+        document.getElementById('submitReview').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Validate form
+            if (!validateReviewForm()) {
+                return;
+            }
+            
+            // Simulate review submission
+            const reviewData = collectReviewData();
+            submitReview(reviewData);
+        });
+
+        function validateReviewForm() {
+            const requiredFields = [
+                'reviewRoute', 'reviewCompany', 'travelDate', 'overallRating',
+                'reviewTitle', 'reviewContent', 'reviewerName'
+            ];
+            
+            for (let fieldId of requiredFields) {
+                const field = document.getElementById(fieldId);
+                if (!field.value.trim()) {
+                    showMessage('กรุณากรอกข้อมูลให้ครบถ้วน', 'error');
+                    field.focus();
+                    return false;
+                }
+            }
+            
+            if (selectedOverallRating === 0) {
+                showMessage('กรุณาให้คะแนนรวม', 'error');
+                return false;
+            }
+            
+            const reviewTerms = document.getElementById('reviewTerms');
+            if (!reviewTerms.checked) {
+                showMessage('กรุณายอมรับเงื่อนไขการเขียนรีวิว', 'error');
+                return false;
+            }
+            
+            return true;
+        }
+
+        function collectReviewData() {
+            const recommend = document.querySelector('input[name="recommend"]:checked');
+            const anonymous = document.getElementById('anonymousReview').checked;
+            
+            return {
+                route: document.getElementById('reviewRoute').value,
+                company: document.getElementById('reviewCompany').value,
+                travelDate: document.getElementById('travelDate').value,
+                rating: selectedOverallRating,
+                title: document.getElementById('reviewTitle').value,
+                content: document.getElementById('reviewContent').value,
+                pros: document.getElementById('reviewPros').value,
+                cons: document.getElementById('reviewCons').value,
+                recommend: recommend ? recommend.value : '',
+                reviewerName: anonymous ? 'ผู้ใช้ไม่ระบุชื่อ' : document.getElementById('reviewerName').value,
+                reviewerAge: document.getElementById('reviewerAge').value,
+                anonymous: anonymous,
+                comfort: selectedDetailedRatings.comfort,
+                punctuality: selectedDetailedRatings.punctuality,
+                service: selectedDetailedRatings.service,
+                value: selectedDetailedRatings.value
+            };
+        }
+
+        function submitReview(reviewData) {
+            // Show loading
+            const submitBtn = document.getElementById('submitReview');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'กำลังส่งรีวิว...';
+            
+            // Simulate API call
+            setTimeout(() => {
+                // Add new review to the list
+                const newReview = {
+                    id: Date.now(),
+                    route: reviewData.route,
+                    routeText: getRouteText(reviewData.route),
+                    company: getCompanyText(reviewData.company),
+                    rating: reviewData.rating,
+                    title: reviewData.title,
+                    content: reviewData.content,
+                    pros: reviewData.pros,
+                    cons: reviewData.cons,
+                    recommend: reviewData.recommend,
+                    reviewerName: reviewData.reviewerName,
+                    reviewerAge: reviewData.reviewerAge,
+                    date: new Date().toISOString().split('T')[0],
+                    helpful: 0,
+                    verified: false,
+                    comfort: reviewData.comfort || 0,
+                    punctuality: reviewData.punctuality || 0,
+                    service: reviewData.service || 0,
+                    value: reviewData.value || 0
+                };
+                
+                // Add to beginning of reviews
+                sampleReviews.unshift(newReview);
+                currentReviews = [...sampleReviews];
+                currentPage = 0;
+                displayedReviews = currentReviews.slice(0, reviewsPerPage);
+                
+                // Update stats
+                updateReviewStats();
+                
+                // Re-render
+                renderReviews();
+                updateLoadMoreButton();
+                
+                // Hide modal and show success
+                document.getElementById('reviewModal').classList.add('hidden');
+                showMessage('ส่งรีวิวเรียบร้อยแล้ว! ขอบคุณสำหรับความคิดเห็น', 'success');
+                
+                // Reset form
+                resetReviewForm();
+                
+                // Scroll to reviews section
+                document.getElementById('reviewsList').scrollIntoView({ behavior: 'smooth' });
+                
+            }, 2000);
+        }
+
+        function getRouteText(routeCode) {
+            const routes = {
+                'bangkok-chiangmai': 'กรุงเทพฯ - เชียงใหม่',
+                'bangkok-phuket': 'กรุงเทพฯ - ภูเก็ต',
+                'bangkok-pattaya': 'กรุงเทพฯ - พัทยา',
+                'bangkok-korat': 'กรุงเทพฯ - นครราชสีมา',
+                'chiangmai-bangkok': 'เชียงใหม่ - กรุงเทพฯ',
+                'phuket-bangkok': 'ภูเก็ต - กรุงเทพฯ'
+            };
+            return routes[routeCode] || routeCode;
+        }
+
+        function getCompanyText(companyCode) {
+            const companies = {
+                'company-a': 'บริษัท ขนส่ง A',
+                'company-b': 'บริษัท ขนส่ง B',
+                'company-c': 'บริษัท ขนส่ง C'
+            };
+            return companies[companyCode] || companyCode;
+        }
+
+        function updateReviewStats() {
+            const totalReviews = sampleReviews.length;
+            const totalRating = sampleReviews.reduce((sum, review) => sum + review.rating, 0);
+            const averageRating = (totalRating / totalReviews).toFixed(1);
+            const recommendCount = sampleReviews.filter(review => review.recommend === 'yes').length;
+            const recommendRate = Math.round((recommendCount / totalReviews) * 100);
+            
+            document.getElementById('totalReviews').textContent = totalReviews.toLocaleString();
+            document.getElementById('averageRating').textContent = averageRating;
+            document.getElementById('recommendRate').textContent = recommendRate + '%';
+        }
+
+        function resetReviewForm() {
+            document.getElementById('reviewForm').reset();
+            selectedOverallRating = 0;
+            selectedDetailedRatings = { comfort: 0, punctuality: 0, service: 0, value: 0 };
+            
+            // Reset star displays
+            document.querySelectorAll('.star, .mini-star').forEach(star => {
+                star.classList.remove('text-yellow-400');
+                star.classList.add('text-gray-300');
+            });
+            
+            document.getElementById('ratingText').textContent = 'เลือกคะแนน';
+            
+            // Re-enable submit button
+            const submitBtn = document.getElementById('submitReview');
+            submitBtn.disabled = false;
+            submitBtn.textContent = '📝 ส่งรีวิว';
+        }
+
+        // Filter event listeners
+        document.getElementById('ratingFilter').addEventListener('change', filterReviews);
+        document.getElementById('routeFilter').addEventListener('change', filterReviews);
+        document.getElementById('sortFilter').addEventListener('change', filterReviews);
+        document.getElementById('loadMoreReviews').addEventListener('click', loadMoreReviews);
+
+        // Initialize reviews on page load
+        initializeReviews();
+
+        // Manual section navigation
+        function showManualSection(sectionName) {
+            // Hide all manual sections
+            document.querySelectorAll('.manual-section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            
+            // Reset all navigation buttons
+            document.querySelectorAll('.manual-nav-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                btn.classList.add('bg-gray-600', 'hover:bg-gray-700');
+            });
+            
+            // Show selected section
+            const targetSection = document.getElementById(`manual-${sectionName}`);
+            if (targetSection) {
+                targetSection.classList.remove('hidden');
+            }
+            
+            // Highlight active button
+            event.target.classList.remove('bg-gray-600', 'hover:bg-gray-700');
+            event.target.classList.add('bg-blue-600', 'hover:bg-blue-700');
+        }
+
+        // Make showManualSection globally available
+        window.showManualSection = showManualSection;
+
+        // Sample bus data
+        const busRoutes = [
+            {
+                id: 1,
+                company: "บริษัท ขนส่ง A",
+                departure: "08:00",
+                arrival: "20:00",
+                duration: "12 ชม.",
+                price: 450,
+                type: "VIP",
+                seats: 28,
+                disabledSeats: 2,
+                facilities: ["♿ ที่นั่งผู้พิการ", "🚽 ห้องน้ำ", "📶 WiFi", "❄️ เครื่องปรับอากาศ", "🔌 ปลั๊กไฟ", "📺 จอแสดงผล", "🛏️ ที่นั่งปรับนอน", "🧊 น้ำแข็งฟรี"]
+            },
+            {
+                id: 2,
+                company: "บริษัท ขนส่ง B", 
+                departure: "14:30",
+                arrival: "02:30",
+                duration: "12 ชม.",
+                price: 380,
+                type: "ธรรมดา",
+                seats: 15,
+                disabledSeats: 1,
+                facilities: ["♿ ที่นั่งผู้พิการ", "🚽 ห้องน้ำ", "❄️ เครื่องปรับอากาศ", "🔌 ปลั๊กไฟ", "📺 จอแสดงผล"]
+            },
+            {
+                id: 3,
+                company: "บริษัท ขนส่ง C",
+                departure: "22:00",
+                arrival: "10:00",
+                duration: "12 ชม.",
+                price: 520,
+                type: "Super VIP",
+                seats: 8,
+                disabledSeats: 1,
+                facilities: ["♿ ที่นั่งผู้พิการ", "🚽 ห้องน้ำ", "📶 WiFi", "🍽️ อาหารว่าง", "❄️ เครื่องปรับอากาศ", "🔌 ปลั๊กไฟ", "📺 จอแสดงผล", "🛏️ ที่นั่งปรับนอน", "🧊 น้ำแข็งฟรี", "☕ เครื่องดื่มร้อน"]
+            }
+        ];
+
+        // Set minimum date to today
+        document.getElementById('date').min = new Date().toISOString().split('T')[0];
+
+        // Form submission
+        document.getElementById('bookingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const departure = document.getElementById('departure').value;
+            const destination = document.getElementById('destination').value;
+            const date = document.getElementById('date').value;
+            const passengers = document.getElementById('passengers').value;
+
+            if (!departure || !destination || !date) {
+                showMessage('กรุณากรอกข้อมูลให้ครบถ้วน', 'error');
+                return;
+            }
+
+            if (departure === destination) {
+                showMessage('ต้นทางและปลายทางต้องไม่เหมือนกัน', 'error');
+                return;
+            }
+
+            searchBuses(departure, destination, date, passengers);
+        });
+
+        function searchBuses(departure, destination, date, passengers) {
+            const resultsDiv = document.getElementById('searchResults');
+            const routesDiv = document.getElementById('busRoutes');
+            
+            // Show loading
+            routesDiv.innerHTML = '<div class="text-center py-8"><div class="text-lg">กำลังค้นหา...</div></div>';
+            resultsDiv.classList.remove('hidden');
+            
+            // Simulate API call
+            setTimeout(() => {
+                const departureText = getLocationText(departure);
+                const destinationText = getLocationText(destination);
+                
+                routesDiv.innerHTML = '';
+                
+                busRoutes.forEach(route => {
+                    const routeCard = createRouteCard(route, departureText, destinationText, date, passengers);
+                    routesDiv.appendChild(routeCard);
+                });
+                
+                // Scroll to results
+                resultsDiv.scrollIntoView({ behavior: 'smooth' });
+            }, 1000);
+        }
+
+        function createRouteCard(route, departure, destination, date, passengers) {
+            const card = document.createElement('div');
+            card.className = 'bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition duration-200 fade-in';
+            
+            const facilitiesHtml = route.facilities.map(facility => 
+                `<span class="inline-block bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-full mr-1 mb-1">${facility}</span>`
+            ).join('');
+            
+            const config = window.elementSdk ? window.elementSdk.config : defaultConfig;
+            const themeColor = config.theme_color || defaultConfig.theme_color;
+            const themeHoverColor = config.theme_hover_color || defaultConfig.theme_hover_color;
+            
+            card.innerHTML = `
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                    <div class="flex-1">
+                        <div class="flex items-center mb-2">
+                            <div class="text-lg font-semibold text-gray-900">${route.company}</div>
+                            <span class="ml-3 px-2 py-1 text-sm rounded-full" style="background-color: ${themeColor}22; color: ${themeColor};">${route.type}</span>
+                        </div>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-600 mb-3">
+                            <div>
+                                <div class="font-medium">ออกเดินทาง</div>
+                                <div>${route.departure}</div>
+                            </div>
+                            <div>
+                                <div class="font-medium">ถึงปลายทาง</div>
+                                <div>${route.arrival}</div>
+                            </div>
+                            <div>
+                                <div class="font-medium">ระยะเวลา</div>
+                                <div>${route.duration}</div>
+                            </div>
+                            <div>
+                                <div class="font-medium">ที่นั่งว่าง</div>
+                                <div>${route.seats} ที่นั่ง</div>
+                                <div class="text-xs text-green-600">♿ ${route.disabledSeats} ที่นั่งผู้พิการ</div>
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <div class="text-xs font-medium text-gray-700 mb-1">สิ่งอำนวยความสะดวก:</div>
+                            <div>${facilitiesHtml}</div>
+                        </div>
+                    </div>
+                    <div class="mt-4 md:mt-0 md:ml-6 text-right">
+                        <div class="text-2xl font-bold mb-2" style="color: ${themeColor};">฿${route.price}</div>
+                        <button onclick="bookTicket(${route.id}, '${departure}', '${destination}', '${date}', ${passengers})" 
+                                class="text-white font-bold py-2 px-6 rounded-lg transition duration-200 book-button"
+                                style="background-color: ${themeColor};"
+                                onmouseenter="this.style.backgroundColor='${themeHoverColor}'"
+                                onmouseleave="this.style.backgroundColor='${themeColor}'">
+                            จองเลย
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        function bookTicket(routeId, departure, destination, date, passengers) {
+            const route = busRoutes.find(r => r.id === routeId);
+            const disabledSeat = document.getElementById('disabledSeat').checked;
+            const seniorCitizen = document.getElementById('seniorCitizen').checked;
+            
+            let basePrice = route.price * parseInt(passengers);
+            let discount = 0;
+            let specialRequests = [];
+            
+            if (seniorCitizen) {
+                discount = Math.round(basePrice * 0.1);
+                specialRequests.push('ส่วนลดผู้สูงอายุ 10%');
+            }
+            
+            if (disabledSeat) {
+                specialRequests.push('ที่นั่งสำหรับผู้พิการ');
+            }
+            
+            const totalPrice = basePrice - discount;
+            
+            const modal = document.getElementById('bookingModal');
+            const detailsDiv = document.getElementById('bookingDetails');
+            
+            const config = window.elementSdk ? window.elementSdk.config : defaultConfig;
+            const themeColor = config.theme_color || defaultConfig.theme_color;
+            
+            let specialRequestsHtml = '';
+            if (specialRequests.length > 0) {
+                specialRequestsHtml = `
+                    <div class="flex justify-between">
+                        <span>ความต้องการพิเศษ:</span>
+                        <span class="text-right">${specialRequests.join(', ')}</span>
+                    </div>
+                `;
+            }
+            
+            let discountHtml = '';
+            if (discount > 0) {
+                discountHtml = `
+                    <div class="flex justify-between text-green-600">
+                        <span>ส่วนลด:</span>
+                        <span>-฿${discount}</span>
+                    </div>
+                `;
+            }
+            
+            detailsDiv.innerHTML = `
+                <div class="border-b pb-3 mb-3">
+                    <div class="font-semibold">${route.company}</div>
+                    <div class="text-sm text-gray-600">${route.type}</div>
+                </div>
+                <div class="space-y-2 text-sm">
+                    <div class="flex justify-between">
+                        <span>เส้นทาง:</span>
+                        <span>${departure} → ${destination}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>วันที่:</span>
+                        <span>${formatDate(date)}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>เวลา:</span>
+                        <span>${route.departure} - ${route.arrival}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>จำนวนผู้โดยสาร:</span>
+                        <span>${passengers} คน</span>
+                    </div>
+                    ${specialRequestsHtml}
+                    <div class="flex justify-between">
+                        <span>ราคาต่อคน:</span>
+                        <span>฿${route.price}</span>
+                    </div>
+                    ${discountHtml}
+                    <div class="flex justify-between font-bold text-lg border-t pt-2">
+                        <span>ราคารวม:</span>
+                        <span style="color: ${themeColor};">฿${totalPrice}</span>
+                    </div>
+                </div>
+            `;
+            
+            modal.classList.remove('hidden');
+            
+            // Store booking data for confirmation
+            window.currentBooking = {
+                routeId,
+                departure,
+                destination,
+                date,
+                passengers,
+                totalPrice,
+                company: route.company,
+                disabledSeat,
+                seniorCitizen
+            };
+        }
+
+
+
+        // Payment method selection
+        let selectedPaymentMethod = null;
+        
+        document.querySelectorAll('.payment-method').forEach(method => {
+            method.addEventListener('click', function() {
+                // Remove previous selection
+                document.querySelectorAll('.payment-method').forEach(m => {
+                    m.classList.remove('border-blue-500', 'bg-blue-50');
+                    m.classList.add('border-gray-300');
+                });
+                
+                // Hide all payment forms
+                document.querySelectorAll('.payment-form').forEach(form => {
+                    form.classList.add('hidden');
+                });
+                
+                // Select current method
+                this.classList.remove('border-gray-300');
+                this.classList.add('border-blue-500', 'bg-blue-50');
+                
+                selectedPaymentMethod = this.dataset.method;
+                
+                // Show corresponding payment form
+                const paymentForm = document.getElementById(selectedPaymentMethod + 'Payment');
+                if (paymentForm) {
+                    paymentForm.classList.remove('hidden');
+                    
+                    // Update amounts for QR and Cash
+                    if (selectedPaymentMethod === 'qr') {
+                        setupQRPayment();
+                    } else if (selectedPaymentMethod === 'cash') {
+                        setupCashPayment();
+                    }
+                }
+            });
+        });
+        
+        function setupQRPayment() {
+            const booking = window.currentBooking;
+            if (booking) {
+                document.getElementById('qrAmount').textContent = `฿${booking.totalPrice}`;
+                document.getElementById('qrReference').textContent = 'QR' + Date.now().toString().slice(-6);
+                document.getElementById('qrCodeContainer').classList.remove('hidden');
+                document.getElementById('qrPlaceholder').classList.add('hidden');
+            }
+        }
+        
+        function setupCashPayment() {
+            const booking = window.currentBooking;
+            if (booking) {
+                document.getElementById('cashAmount').textContent = `฿${booking.totalPrice}`;
+            }
+        }
+        
+        // Card number formatting
+        document.getElementById('cardNumber').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            value = value.replace(/(\d{4})(?=\d)/g, '$1 ');
+            if (value.length > 19) value = value.slice(0, 19);
+            e.target.value = value;
+        });
+        
+        // Expiry date formatting
+        document.getElementById('expiryDate').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.slice(0, 2) + '/' + value.slice(2, 4);
+            }
+            e.target.value = value;
+        });
+        
+        // CVV formatting
+        document.getElementById('cvv').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 4) value = value.slice(0, 4);
+            e.target.value = value;
+        });
+
+        // Modal event listeners
+        document.getElementById('confirmBooking').addEventListener('click', function() {
+            const booking = window.currentBooking;
+            
+            // Validate identity form
+            const idNumber = document.getElementById('idNumber').value;
+            const phoneNumber = document.getElementById('phoneNumber').value;
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const email = document.getElementById('email').value;
+            const agreeTerms = document.getElementById('agreeTerms').checked;
+            
+            // Validation
+            if (!idNumber || !phoneNumber || !firstName || !lastName || !email) {
+                showMessage('กรุณากรอกข้อมูลยืนยันตัวตนให้ครบถ้วน', 'error');
+                return;
+            }
+            
+            if (!validateIdNumber(idNumber)) {
+                showMessage('เลขบัตรประชาชนไม่ถูกต้อง กรุณากรอก 13 หลัก', 'error');
+                return;
+            }
+            
+            if (!validatePhoneNumber(phoneNumber)) {
+                showMessage('เบอร์โทรศัพท์ไม่ถูกต้อง กรุณากรอก 10 หลัก', 'error');
+                return;
+            }
+            
+            if (!validateEmail(email)) {
+                showMessage('รูปแบบอีเมลไม่ถูกต้อง', 'error');
+                return;
+            }
+            
+            if (!agreeTerms) {
+                showMessage('กรุณายอมรับเงื่อนไขการใช้บริการ', 'error');
+                return;
+            }
+            
+            // Validate payment method
+            if (!selectedPaymentMethod) {
+                showMessage('กรุณาเลือกวิธีชำระเงิน', 'error');
+                return;
+            }
+            
+            // Validate payment details based on method
+            if (selectedPaymentMethod === 'card') {
+                if (!validateCardPayment()) {
+                    return;
+                }
+            }
+            
+            // Process payment
+            processPayment(selectedPaymentMethod, booking);
+        });
+        
+        function validateCardPayment() {
+            const cardNumber = document.getElementById('cardNumber').value.replace(/\s/g, '');
+            const expiryDate = document.getElementById('expiryDate').value;
+            const cvv = document.getElementById('cvv').value;
+            const cardName = document.getElementById('cardName').value;
+            
+            if (!cardNumber || cardNumber.length < 13) {
+                showMessage('กรุณากรอกหมายเลขบัตรให้ถูกต้อง', 'error');
+                return false;
+            }
+            
+            if (!expiryDate || expiryDate.length !== 5) {
+                showMessage('กรุณากรอกวันหมดอายุให้ถูกต้อง (MM/YY)', 'error');
+                return false;
+            }
+            
+            if (!cvv || cvv.length < 3) {
+                showMessage('กรุณากรอก CVV ให้ถูกต้อง', 'error');
+                return false;
+            }
+            
+            if (!cardName.trim()) {
+                showMessage('กรุณากรอกชื่อบนบัตร', 'error');
+                return false;
+            }
+            
+            // Validate expiry date
+            const [month, year] = expiryDate.split('/');
+            const currentDate = new Date();
+            const currentYear = currentDate.getFullYear() % 100;
+            const currentMonth = currentDate.getMonth() + 1;
+            
+            if (parseInt(month) < 1 || parseInt(month) > 12) {
+                showMessage('เดือนไม่ถูกต้อง', 'error');
+                return false;
+            }
+            
+            if (parseInt(year) < currentYear || (parseInt(year) === currentYear && parseInt(month) < currentMonth)) {
+                showMessage('บัตรหมดอายุแล้ว', 'error');
+                return false;
+            }
+            
+            return true;
+        }
+        
+        function processPayment(method, booking) {
+            const statusDiv = document.getElementById('paymentStatus');
+            const statusContent = document.getElementById('paymentStatusContent');
+            
+            // Show processing status
+            statusDiv.classList.remove('hidden');
+            statusDiv.className = 'mt-4 p-4 rounded-lg bg-blue-50 border border-blue-200';
+            statusContent.innerHTML = `
+                <div class="flex items-center">
+                    <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mr-3"></div>
+                    <span class="text-blue-800">กำลังดำเนินการชำระเงิน...</span>
+                </div>
+            `;
+            
+            // Disable confirm button
+            document.getElementById('confirmBooking').disabled = true;
+            document.getElementById('confirmBooking').classList.add('opacity-50', 'cursor-not-allowed');
+            
+            // Simulate payment processing
+            setTimeout(() => {
+                const success = Math.random() > 0.1; // 90% success rate
+                
+                if (success) {
+                    // Payment successful
+                    statusDiv.className = 'mt-4 p-4 rounded-lg bg-green-50 border border-green-200';
+                    statusContent.innerHTML = `
+                        <div class="flex items-center">
+                            <span class="text-green-600 mr-2">✅</span>
+                            <span class="text-green-800">ชำระเงินสำเร็จ!</span>
+                        </div>
+                    `;
+                    
+                    setTimeout(() => {
+                        // Hide modal
+                        document.getElementById('bookingModal').classList.add('hidden');
+                        
+                        // Show success message with booking reference and email notification
+                        const bookingRef = 'BT' + Date.now().toString().slice(-6);
+                        const paymentMethod = getPaymentMethodText(method);
+                        const userEmail = document.getElementById('email').value;
+                        
+                        // Show detailed success modal
+                        showBookingSuccessModal(bookingRef, paymentMethod, userEmail);
+                        
+                        // Reset forms
+                        document.getElementById('bookingForm').reset();
+                        document.getElementById('identityForm').reset();
+                        resetPaymentForms();
+                        document.getElementById('searchResults').classList.add('hidden');
+                    }, 2000);
+                    
+                } else {
+                    // Payment failed
+                    statusDiv.className = 'mt-4 p-4 rounded-lg bg-red-50 border border-red-200';
+                    statusContent.innerHTML = `
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <span class="text-red-600 mr-2">❌</span>
+                                <span class="text-red-800">การชำระเงินไม่สำเร็จ กรุณาลองใหม่อีกครั้ง</span>
+                            </div>
+                            <button onclick="retryPayment()" class="text-red-600 hover:text-red-800 text-sm underline">
+                                ลองใหม่
+                            </button>
+                        </div>
+                    `;
+                    
+                    // Re-enable confirm button
+                    document.getElementById('confirmBooking').disabled = false;
+                    document.getElementById('confirmBooking').classList.remove('opacity-50', 'cursor-not-allowed');
+                }
+            }, 3000);
+        }
+        
+        function retryPayment() {
+            document.getElementById('paymentStatus').classList.add('hidden');
+            document.getElementById('confirmBooking').disabled = false;
+            document.getElementById('confirmBooking').classList.remove('opacity-50', 'cursor-not-allowed');
+        }
+        
+        function getPaymentMethodText(method) {
+            const methods = {
+                'card': 'บัตรเครดิต/เดบิต',
+                'qr': 'QR Code',
+                'cash': 'เงินสด'
+            };
+            return methods[method] || method;
+        }
+        
+        function resetPaymentForms() {
+            // Reset payment method selection
+            selectedPaymentMethod = null;
+            document.querySelectorAll('.payment-method').forEach(m => {
+                m.classList.remove('border-blue-500', 'bg-blue-50');
+                m.classList.add('border-gray-300');
+            });
+            
+            // Hide all payment forms
+            document.querySelectorAll('.payment-form').forEach(form => {
+                form.classList.add('hidden');
+            });
+            
+            // Reset card form
+            document.getElementById('cardNumber').value = '';
+            document.getElementById('expiryDate').value = '';
+            document.getElementById('cvv').value = '';
+            document.getElementById('cardName').value = '';
+            
+            // Reset QR code
+            document.getElementById('qrCodeContainer').classList.add('hidden');
+            document.getElementById('qrPlaceholder').classList.remove('hidden');
+            
+            // Hide payment status
+            document.getElementById('paymentStatus').classList.add('hidden');
+        }
+
+        document.getElementById('cancelBooking').addEventListener('click', function() {
+            document.getElementById('bookingModal').classList.add('hidden');
+        });
+
+        function getLocationText(code) {
+            const locations = {
+                'bangkok': 'กรุงเทพฯ',
+                'chiangmai': 'เชียงใหม่',
+                'phuket': 'ภูเก็ต',
+                'pattaya': 'พัทยา',
+                'korat': 'นครราชสีมา'
+                
+            };
+            return locations[code] || code;
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('th-TH', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        function validateIdNumber(idNumber) {
+            // Remove any non-digit characters
+            const cleanId = idNumber.replace(/\D/g, '');
+            
+            // Check if it's exactly 13 digits
+            if (cleanId.length !== 13) return false;
+            
+            // Simple checksum validation for Thai ID
+            let sum = 0;
+            for (let i = 0; i < 12; i++) {
+                sum += parseInt(cleanId.charAt(i)) * (13 - i);
+            }
+            const checkDigit = (11 - (sum % 11)) % 10;
+            
+            return checkDigit === parseInt(cleanId.charAt(12));
+        }
+        
+        function validatePhoneNumber(phoneNumber) {
+            const cleanPhone = phoneNumber.replace(/\D/g, '');
+            return cleanPhone.length === 10 && cleanPhone.startsWith('0');
+        }
+        
+        function validateEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        function showMessage(message, type) {
+            const messageDiv = document.getElementById('successMessage');
+            messageDiv.innerHTML = `
+                <div class="flex items-center">
+                    <span class="mr-2">${type === 'success' ? '✅' : '❌'}</span>
+                    <span>${message}</span>
+                </div>
+            `;
+            messageDiv.className = `fixed top-4 right-4 px-6 py-4 rounded-lg shadow-lg z-50 ${
+                type === 'success' ? 'bg-green-500' : 'bg-red-500'
+            } text-white`;
+            messageDiv.classList.remove('hidden');
+            
+            setTimeout(() => {
+                messageDiv.classList.add('hidden');
+            }, 4000);
+        }
+        
+        function showBookingSuccessModal(bookingRef, paymentMethod, userEmail) {
+            const modal = document.getElementById('bookingSuccessModal');
+            document.getElementById('successBookingRef').textContent = bookingRef;
+            document.getElementById('successPaymentMethod').textContent = paymentMethod;
+            document.getElementById('successEmail').textContent = userEmail;
+            
+            modal.classList.remove('hidden');
+        }
+        
+        function closeSuccessModal() {
+            document.getElementById('bookingSuccessModal').classList.add('hidden');
+        }
+        
+        // Make closeSuccessModal globally available
+        window.closeSuccessModal = closeSuccessModal;
+        
+        // Auto-format ID number input
+        document.getElementById('idNumber').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 13) value = value.slice(0, 13);
+            e.target.value = value;
+        });
+        
+        // Auto-format phone number input
+        document.getElementById('phoneNumber').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 10) value = value.slice(0, 10);
+            e.target.value = value;
+        });
+    </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9c5520a32781d32c',t:'MTc2OTY1MTkzOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
