@@ -1,0 +1,1306 @@
+<!doctype html>
+<html lang="th" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>จองโต๊ะอาหาร</title>
+  <script src="/_sdk/data_sdk.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+  <style>
+    body {
+      box-sizing: border-box;
+      font-family: 'Prompt', sans-serif;
+    }
+    
+    .page-section {
+      display: none;
+      min-height: 100%;
+    }
+    
+    .page-section.active {
+      display: flex;
+    }
+    
+    .booking-card {
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .booking-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    }
+    
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 16px 24px;
+      border-radius: 12px;
+      color: white;
+      font-weight: 500;
+      z-index: 1000;
+      animation: slideIn 0.3s ease-out;
+    }
+    
+    @keyframes slideIn {
+      from {
+        transform: translateX(400px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+    
+    .loading-spinner {
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-top: 3px solid white;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      animation: spin 0.8s linear infinite;
+      display: inline-block;
+      margin-left: 8px;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .queue-card {
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 3px solid transparent;
+    }
+    
+    .queue-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(167, 139, 250, 0.3);
+    }
+    
+    .queue-card.selected {
+      border-color: #a78bfa;
+      background-color: #f3f0ff;
+      transform: scale(1.05);
+    }
+    
+    .queue-card.booked {
+      opacity: 0.5;
+      cursor: not-allowed;
+      background-color: #f1f5f9;
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.5s ease-out;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+ </head>
+ <body class="h-full">
+  <div id="app" class="h-full w-full overflow-auto" style="background: linear-gradient(135deg, #a78bfa 0%, #86efac 100%);"><!-- PAGE 1: Welcome Page -->
+   <section id="page-welcome" class="page-section active flex-col items-center justify-center px-6">
+    <div class="text-center max-w-4xl mx-auto fade-in">
+     <h1 id="restaurant-name-welcome" class="text-6xl md:text-7xl font-bold mb-6" style="color: #ffffff; text-shadow: 2px 2px 8px rgba(0,0,0,0.2);">🍲 ร้านชาบูชาบู</h1>
+     <p id="welcome-message-text" class="text-2xl md:text-3xl mb-12" style="color: #ffffff; text-shadow: 1px 1px 4px rgba(0,0,0,0.2);">ยินดีต้อนรับสู่ระบบจองโต๊ะอาหาร</p>
+     <div class="flex flex-col md:flex-row gap-4 justify-center mb-12"><button onclick="goToPage('login')" class="px-8 py-4 rounded-xl font-semibold text-xl text-white transition-all shadow-lg" style="background-color: #a78bfa;"> 🔐 เข้าสู่ระบบ </button> <button onclick="goToPage('register')" class="px-8 py-4 rounded-xl font-semibold text-xl transition-all shadow-lg" style="background-color: #ffffff; color: #a78bfa;"> 👤 สมัครสมาชิก </button>
+     </div><!-- Admin Login Section on Welcome Page -->
+     <div class="mt-20 max-w-xs mx-auto p-4 rounded-lg" style="background-color: rgba(255, 255, 255, 0.6); backdrop-filter: blur(5px);">
+      <p class="text-xs text-center mb-3" style="color: #64748b;">Admin</p>
+      <div class="space-y-2"><input type="text" id="admin-username-welcome" class="w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:border-gray-400" style="border-color: #cbd5e1; background-color: rgba(255, 255, 255, 0.8);" placeholder=""> <input type="password" id="admin-password-welcome" class="w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:border-gray-400" style="border-color: #cbd5e1; background-color: rgba(255, 255, 255, 0.8);" placeholder=""> <button onclick="adminLoginFromWelcome()" class="w-full px-4 py-2 text-sm rounded-lg font-medium text-white transition-all" style="background-color: #94a3b8;"> Login </button>
+      </div>
+     </div>
+    </div>
+   </section><!-- PAGE 2: Login Page -->
+   <section id="page-login" class="page-section flex-col items-center justify-center px-6">
+    <div class="w-full max-w-md mx-auto fade-in">
+     <div class="p-8 rounded-2xl shadow-2xl" style="background-color: #ffffff;">
+      <h2 class="text-3xl font-bold mb-2 text-center" style="color: #2d3748;">🔐 เข้าสู่ระบบ</h2>
+      <p class="text-center mb-8" style="color: #64748b;">กรุณาล็อกอินเพื่อเข้าสู่ระบบการจอง</p>
+      <form id="login-form">
+       <div class="space-y-4">
+        <div><label for="login-type" class="block text-sm font-medium mb-2" style="color: #4a5568;">Login</label> <select id="login-type" class="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:border-purple-500" style="border-color: #e2e8f0; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%228%22 viewBox=%220 0 12 8%22><path fill=%22%23a78bfa%22 d=%22M0 0l6 8 6-8z%22/></svg>'); background-repeat: no-repeat; background-position: right 12px center; padding-right: 40px;"> <option value="phone">เบอร์โทรศัพท์</option> <option value="username">Username</option> </select>
+        </div>
+        <div><label for="login-user" class="block text-sm font-medium mb-2" style="color: #4a5568;">User</label> <input type="text" id="login-user" required class="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:border-purple-500" style="border-color: #e2e8f0;" placeholder="กรอกเบอร์โทรศัพท์หรือ Username">
+        </div>
+        <div><label for="login-password" class="block text-sm font-medium mb-2" style="color: #4a5568;">รหัสผ่าน</label> <input type="password" id="login-password" required class="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:border-purple-500" style="border-color: #e2e8f0;" placeholder="รหัสผ่าน">
+        </div>
+       </div>
+       <div class="flex gap-3 mt-8"><button type="button" onclick="goToPage('welcome')" class="flex-1 px-6 py-3 rounded-lg font-semibold transition-all" style="background-color: #e2e8f0; color: #2d3748;"> ยกเลิก </button> <button type="submit" class="flex-1 px-6 py-3 rounded-lg font-semibold text-white transition-all" style="background-color: #a78bfa;"> ตกลง </button>
+       </div><button type="button" onclick="goToPage('register')" class="w-full mt-4 px-6 py-3 rounded-lg font-semibold transition-all" style="background-color: #86efac; color: white;"> สมัครสมาชิก </button>
+      </form>
+     </div>
+    </div>
+   </section><!-- PAGE 3: Register Page -->
+   <section id="page-register" class="page-section flex-col px-6 py-8">
+    <div class="w-full max-w-3xl mx-auto fade-in">
+     <div class="p-8 rounded-2xl shadow-2xl" style="background-color: #ffffff;">
+      <h2 class="text-3xl font-bold mb-8 text-center" style="color: #2d3748;">👤 สมัครสมาชิก</h2>
+      <form id="register-form">
+       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div><label for="reg-name" class="block text-sm font-medium mb-2" style="color: #4a5568;">ชื่อ-นามสกุล *</label> <input type="text" id="reg-name" required class="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:border-purple-500" style="border-color: #e2e8f0;" placeholder="กรอกชื่อของคุณ">
+        </div>
+        <div><label for="reg-phone" class="block text-sm font-medium mb-2" style="color: #4a5568;">หมายเลขโทรศัพท์ *</label> <input type="tel" id="reg-phone" required pattern="[0-9]{10}" maxlength="10" class="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:border-purple-500" style="border-color: #e2e8f0;" placeholder="0812345678">
+        </div>
+        <div><label for="reg-birth-date" class="block text-sm font-medium mb-2" style="color: #4a5568;">วันเกิด *</label> <input type="date" id="reg-birth-date" required class="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:border-purple-500" style="border-color: #e2e8f0;">
+        </div>
+        <div><label for="reg-email" class="block text-sm font-medium mb-2" style="color: #4a5568;">อีเมล *</label> <input type="email" id="reg-email" required class="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:border-purple-500" style="border-color: #e2e8f0;" placeholder="example@email.com">
+        </div>
+        <div><label for="reg-username" class="block text-sm font-medium mb-2" style="color: #4a5568;">Username *</label> <input type="text" id="reg-username" required class="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:border-purple-500" style="border-color: #e2e8f0;" placeholder="username">
+        </div>
+        <div><label for="reg-password" class="block text-sm font-medium mb-2" style="color: #4a5568;">รหัสผ่าน *</label> <input type="password" id="reg-password" required minlength="6" class="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:border-purple-500" style="border-color: #e2e8f0;" placeholder="รหัสผ่านอย่างน้อย 6 ตัว">
+        </div>
+       </div>
+       <div class="flex gap-3 mt-8"><button type="button" onclick="goToPage('welcome')" class="flex-1 px-6 py-4 rounded-lg font-semibold transition-all" style="background-color: #e2e8f0; color: #2d3748;"> ยกเลิก </button> <button type="submit" id="register-btn" class="flex-1 px-6 py-4 rounded-lg font-semibold text-white transition-all" style="background-color: #a78bfa;"> <span>สมัครสมาชิก</span> </button>
+       </div>
+      </form>
+     </div>
+    </div>
+   </section><!-- PAGE 4: Booking & My List Page -->
+   <section id="page-booking" class="page-section flex-col px-6 py-8">
+    <div class="w-full max-w-6xl mx-auto"><!-- Header with Logout -->
+     <div class="flex justify-between items-center mb-6 p-4 rounded-xl" style="background-color: rgba(255, 255, 255, 0.95);">
+      <div>
+       <h2 class="text-2xl font-bold" style="color: #2d3748;">สวัสดี, <span id="logged-user-name">ผู้ใช้</span></h2>
+       <p class="text-sm" style="color: #64748b;">ยินดีต้อนรับสู่ระบบจองโต๊ะ</p>
+      </div><button onclick="logout()" class="px-6 py-2 rounded-lg font-medium text-white transition-all" style="background-color: #f87171;"> ออกจากระบบ </button>
+     </div><!-- Tab Navigation -->
+     <div class="mb-6 rounded-xl overflow-hidden shadow-lg" style="background-color: #ffffff;">
+      <div class="grid grid-cols-2"><button id="tab-booking" class="px-6 py-4 font-semibold transition-all" style="background-color: #a78bfa; color: white;" onclick="switchBookingTab('booking')"> 📝 จองโต๊ะ </button> <button id="tab-mylist" class="px-6 py-4 font-semibold transition-all" style="background-color: #e2e8f0; color: #2d3748;" onclick="switchBookingTab('mylist')"> 📋 รายการของฉัน </button>
+      </div>
+     </div><!-- Booking Section -->
+     <div id="section-booking" class="p-8 rounded-2xl shadow-lg" style="background-color: #ffffff;">
+      <h3 class="text-2xl font-bold mb-6" style="color: #2d3748;">📝 จองโต๊ะอาหาร</h3>
+      <form id="booking-form">
+       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        <div><label for="guests" class="block text-sm font-medium mb-2" style="color: #4a5568;">จำนวนคน *</label> <input type="number" id="guests" required min="1" max="20" class="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:border-purple-500" style="border-color: #e2e8f0;" placeholder="กรอกจำนวนคน" onchange="loadAvailableQueues()">
+        </div>
+        <div><label for="date" class="block text-sm font-medium mb-2" style="color: #4a5568;">วันท��่ *</label> <input type="date" id="date" required class="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:border-purple-500" style="border-color: #e2e8f0;" onchange="loadAvailableQueues()">
+        </div>
+        <div><label for="time" class="block text-sm font-medium mb-2" style="color: #4a5568;">เวลา *</label> <input type="time" id="time" required class="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:border-purple-500" style="border-color: #e2e8f0;" onchange="loadAvailableQueues()">
+        </div>
+       </div><!-- Available Seats Info -->
+       <div id="seats-info" class="mb-4 p-4 rounded-lg hidden" style="background-color: #fef3c7; border-left: 4px solid #fbbf24;">
+        <div class="flex justify-between items-center flex-wrap gap-3">
+         <div>
+          <p class="font-semibold text-lg" style="color: #d97706;">📊 ที่นั่งเหลือ: <span id="available-seats">0</span> / 20</p>
+         </div>
+         <div class="text-sm" style="color: #92400e;"><span class="inline-block w-4 h-4 rounded" style="background-color: #ffffff; border: 2px solid #e2e8f0;"></span> ว่าง <span class="inline-block w-4 h-4 rounded ml-3" style="background-color: #f1f5f9; border: 2px solid #94a3b8;"></span> จองแล้ว
+         </div>
+        </div>
+       </div><!-- Queue Selection -->
+       <div class="mb-6"><label class="block text-sm font-medium mb-3" style="color: #4a5568;">เลือกบัตรคิว *</label>
+        <div id="queue-container" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"><!-- Queue cards will be generated here -->
+        </div><input type="hidden" id="selected-queue" required> <input type="hidden" id="selected-table" required> <input type="hidden" id="selected-table-type" required> <input type="hidden" id="selected-end-time" required>
+       </div><!-- Selected Queue Info -->
+       <div id="selected-info" class="mb-6 p-5 rounded-lg hidden" style="background-color: #f3f0ff; border: 2px solid #a78bfa;">
+        <h4 class="font-semibold mb-3 text-lg" style="color: #7c3aed;">✨ รายละเอียดการจอง</h4>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm" style="color: #4a5568;">
+         <p>🎫 <strong>บัตรคิว:</strong> <span id="info-queue"></span></p>
+         <p> <strong>หมายเลขโต๊ะ:</strong> <span id="info-table"></span></p>
+         <p>🍽️ <strong>ประเภท:</strong> <span id="info-type"></span></p>
+         <p>⏰ <strong>หมดเวลา:</strong> <span id="info-end-time"></span> น.</p>
+        </div>
+       </div><button type="submit" id="submit-btn" class="w-full mt-6 px-6 py-4 rounded-lg font-semibold text-white text-lg transition-all" style="background-color: #a78bfa;"> <span id="submit-text">ยืนยันการจอง</span> </button>
+      </form>
+     </div><!-- My List Section -->
+     <div id="section-mylist" class="p-8 rounded-2xl shadow-lg hidden" style="background-color: #ffffff;">
+      <h3 class="text-2xl font-bold mb-6" style="color: #2d3748;">📋 รายการจองของฉัน</h3>
+      <div id="my-bookings-list" class="space-y-4"><!-- My bookings will be shown here -->
+      </div>
+     </div>
+    </div>
+   </section><!-- ADMIN PAGE -->
+   <section id="page-admin" class="page-section flex-col px-6 py-8">
+    <div class="w-full max-w-6xl mx-auto">
+     <div class="flex justify-between items-center mb-6 p-4 rounded-xl" style="background-color: rgba(255, 255, 255, 0.95);">
+      <h2 class="text-2xl font-bold" style="color: #2d3748;">🔐 แอดมิน</h2><button onclick="adminLogout()" class="px-6 py-2 rounded-lg font-medium text-white transition-all" style="background-color: #f87171;"> ออกจากระบบ </button>
+     </div><!-- Statistics -->
+     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      <div class="p-6 rounded-xl shadow-lg" style="background-color: #f0fdf4; border-left: 4px solid #86efac;">
+       <p class="text-sm" style="color: #4a5568;">สมาชิกท��้งหมด</p>
+       <p id="total-members" class="text-4xl font-bold mt-1" style="color: #16a34a;">0</p>
+      </div>
+      <div class="p-6 rounded-xl shadow-lg" style="background-color: #fef3c7; border-left: 4px solid #fbbf24;">
+       <p class="text-sm" style="color: #4a5568;">การจองทั้งหมด</p>
+       <p id="total-bookings" class="text-4xl font-bold mt-1" style="color: #d97706;">0</p>
+      </div>
+      <div class="p-6 rounded-xl shadow-lg" style="background-color: #f3f0ff; border-left: 4px solid #a78bfa;">
+       <p class="text-sm" style="color: #4a5568;">การจองวันนี้</p>
+       <p id="today-bookings" class="text-4xl font-bold mt-1" style="color: #7c3aed;">0</p>
+      </div>
+     </div><!-- Sub-tabs -->
+     <div class="flex gap-4 mb-6"><button id="admin-tab-members" class="px-6 py-3 rounded-xl font-semibold shadow-lg transition-all" style="background-color: #a78bfa; color: white;" onclick="showAdminList('members')"> สมาชิก </button> <button id="admin-tab-bookings" class="px-6 py-3 rounded-xl font-semibold shadow-lg transition-all" style="background-color: #e2e8f0; color: #2d3748;" onclick="showAdminList('bookings')"> การจอง </button>
+     </div><!-- Add Booking Button (only shown on bookings tab) -->
+     <div id="admin-add-booking-section" class="mb-6 hidden"><button onclick="showAddBookingModal()" class="px-6 py-3 rounded-xl font-semibold shadow-lg text-white transition-all" style="background-color: #86efac;"> ➕ เพิ��มการจองให���่ </button>
+     </div><!-- Admin Members List -->
+     <div id="admin-members-list" class="space-y-4"><!-- Members will be shown here -->
+     </div><!-- Admin Bookings List -->
+     <div id="admin-bookings-list" class="space-y-4 hidden"><!-- Bookings will be shown here -->
+     </div>
+    </div>
+   </section>
+  </div><!-- Add/Edit Booking Modal -->
+  <div id="booking-modal" class="hidden fixed inset-0 flex items-center justify-center px-4 py-6" style="background-color: rgba(0, 0, 0, 0.7); z-index: 2000; overflow-y: auto;">
+   <div class="w-full max-w-2xl mx-auto my-8 p-8 rounded-2xl shadow-2xl" style="background-color: #ffffff;">
+    <div class="flex justify-between items-center mb-6">
+     <h3 id="modal-title" class="text-2xl font-bold" style="color: #2d3748;">เพิ่มการจองใหม่</h3><button onclick="closeBookingModal()" class="text-3xl font-bold" style="color: #a0aec0;">×</button>
+    </div>
+    <form id="admin-booking-form"><input type="hidden" id="edit-booking-id">
+     <div class="space-y-4">
+      <div><label for="modal-member" class="block text-sm font-medium mb-2" style="color: #4a5568;">เลือกสมาชิก *</label> <select id="modal-member" required class="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:border-purple-500" style="border-color: #e2e8f0;"> <option value="">-- เลือกสมาชิก --</option> </select>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+       <div><label for="modal-guests" class="block text-sm font-medium mb-2" style="color: #4a5568;">จำนวนคน *</label> <input type="number" id="modal-guests" required min="1" max="20" class="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:border-purple-500" style="border-color: #e2e8f0;" placeholder="จำนวนคน" onchange="loadModalQueues()">
+       </div>
+       <div><label for="modal-date" class="block text-sm font-medium mb-2" style="color: #4a5568;">วันที่ *</label> <input type="date" id="modal-date" required class="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:border-purple-500" style="border-color: #e2e8f0;" onchange="loadModalQueues()">
+       </div>
+       <div><label for="modal-time" class="block text-sm font-medium mb-2" style="color: #4a5568;">เวลา *</label> <input type="time" id="modal-time" required class="w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:border-purple-500" style="border-color: #e2e8f0;" onchange="loadModalQueues()">
+       </div>
+      </div><!-- Available Seats Info -->
+      <div id="modal-seats-info" class="p-4 rounded-lg hidden" style="background-color: #fef3c7; border-left: 4px solid #fbbf24;">
+       <p class="font-semibold" style="color: #d97706;">📊 ที่นั่งเหลือ: <span id="modal-available-seats">0</span> / 20</p>
+      </div><!-- Queue Selection -->
+      <div><label class="block text-sm font-medium mb-3" style="color: #4a5568;">เลือกบัตรคิว *</label>
+       <div id="modal-queue-container" class="grid grid-cols-3 md:grid-cols-4 gap-3 max-h-80 overflow-y-auto p-2" style="border: 2px solid #e2e8f0; border-radius: 8px;"><!-- Queue cards will be generated here -->
+       </div><input type="hidden" id="modal-selected-queue" required> <input type="hidden" id="modal-selected-table" required> <input type="hidden" id="modal-selected-table-type" required> <input type="hidden" id="modal-selected-end-time" required>
+      </div><!-- Selected Queue Info -->
+      <div id="modal-selected-info" class="p-4 rounded-lg hidden" style="background-color: #f3f0ff; border: 2px solid #a78bfa;">
+       <h4 class="font-semibold mb-2" style="color: #7c3aed;">✨ รายละเอียด</h4>
+       <div class="grid grid-cols-2 gap-2 text-sm" style="color: #4a5568;">
+        <p>🎫 บัตรคิว: <span id="modal-info-queue"></span></p>
+        <p>🪑 โต๊ะ: <span id="modal-info-table"></span></p>
+        <p>🍽️ ประเภท: <span id="modal-info-type"></span></p>
+        <p>⏰ หมดเวลา: <span id="modal-info-end-time"></span> น.</p>
+       </div>
+      </div>
+     </div>
+     <div class="flex gap-3 mt-6"><button type="button" onclick="closeBookingModal()" class="flex-1 px-6 py-3 rounded-lg font-semibold transition-all" style="background-color: #e2e8f0; color: #2d3748;"> ยกเลิก </button> <button type="submit" id="modal-submit-btn" class="flex-1 px-6 py-3 rounded-lg font-semibold text-white transition-all" style="background-color: #a78bfa;"> <span id="modal-submit-text">บันทึก</span> </button>
+     </div>
+    </form>
+   </div>
+  </div>
+  <script>
+    // Default Configuration - Fixed admin credentials
+    const ADMIN_USERNAME = "namm";
+    const ADMIN_PASSWORD = "namm";
+    
+    const defaultConfig = {
+      restaurant_name: "🍲 ร้านชาบูชาบู",
+      welcome_message: "ยินดีต้อนรับสู่ระบจองโต๊ะอาหาร",
+      primary_color: "#a78bfa",
+      surface_color: "#ffffff",
+      text_color: "#2d3748",
+      button_color: "#a78bfa",
+      background_gradient_start: "#a78bfa",
+      background_gradient_end: "#86efac",
+      font_family: "Prompt",
+      font_size: 16
+    };
+
+    let allData = [];
+    let isLoading = false;
+    let currentPage = 'welcome';
+    let currentBookingTab = 'booking';
+    let currentAdminList = 'members';
+    let loggedInMember = null;
+
+    // Page Navigation
+    function goToPage(page) {
+      currentPage = page;
+      document.querySelectorAll('.page-section').forEach(section => section.classList.remove('active'));
+      document.getElementById(`page-${page}`).classList.add('active');
+    }
+
+    // Switch Booking Tab
+    function switchBookingTab(tab) {
+      currentBookingTab = tab;
+      
+      document.getElementById('tab-booking').style.backgroundColor = tab === 'booking' ? '#a78bfa' : '#e2e8f0';
+      document.getElementById('tab-booking').style.color = tab === 'booking' ? 'white' : '#2d3748';
+      document.getElementById('tab-mylist').style.backgroundColor = tab === 'mylist' ? '#a78bfa' : '#e2e8f0';
+      document.getElementById('tab-mylist').style.color = tab === 'mylist' ? 'white' : '#2d3748';
+      
+      if (tab === 'booking') {
+        document.getElementById('section-booking').classList.remove('hidden');
+        document.getElementById('section-mylist').classList.add('hidden');
+      } else {
+        document.getElementById('section-booking').classList.add('hidden');
+        document.getElementById('section-mylist').classList.remove('hidden');
+        renderMyBookings();
+      }
+    }
+
+    // Logout
+    function logout() {
+      loggedInMember = null;
+      goToPage('welcome');
+      showToast('ออกจากระบบสำเร็จ', 'success');
+    }
+
+    // Admin Login from Welcome Page
+    function adminLoginFromWelcome() {
+      const username = document.getElementById('admin-username-welcome').value;
+      const password = document.getElementById('admin-password-welcome').value;
+      
+      console.log('Username entered:', username);
+      console.log('Password entered:', password);
+      console.log('Expected username:', ADMIN_USERNAME);
+      console.log('Expected password:', ADMIN_PASSWORD);
+      console.log('Username match:', username === ADMIN_USERNAME);
+      console.log('Password match:', password === ADMIN_PASSWORD);
+      
+      if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+        goToPage('admin');
+        updateAdminStats();
+        renderAdminMembers();
+        renderAdminBookings();
+        showToast('เข้าสู่ระบบแอดมินสำเร็จ', 'success');
+        document.getElementById('admin-username-welcome').value = 'namm';
+        document.getElementById('admin-password-welcome').value = 'namm';
+      } else {
+        showToast('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง', 'error');
+      }
+    }
+
+    // Admin Logout
+    function adminLogout() {
+      goToPage('welcome');
+      showToast('ออกจากระบบแอดมินสำเร็จ', 'success');
+    }
+
+    // Show admin list
+    function showAdminList(type) {
+      currentAdminList = type;
+      
+      document.getElementById('admin-tab-members').style.backgroundColor = type === 'members' ? '#a78bfa' : '#e2e8f0';
+      document.getElementById('admin-tab-members').style.color = type === 'members' ? 'white' : '#2d3748';
+      document.getElementById('admin-tab-bookings').style.backgroundColor = type === 'bookings' ? '#a78bfa' : '#e2e8f0';
+      document.getElementById('admin-tab-bookings').style.color = type === 'bookings' ? 'white' : '#2d3748';
+      
+      if (type === 'members') {
+        document.getElementById('admin-members-list').classList.remove('hidden');
+        document.getElementById('admin-bookings-list').classList.add('hidden');
+        document.getElementById('admin-add-booking-section').classList.add('hidden');
+      } else {
+        document.getElementById('admin-members-list').classList.add('hidden');
+        document.getElementById('admin-bookings-list').classList.remove('hidden');
+        document.getElementById('admin-add-booking-section').classList.remove('hidden');
+      }
+    }
+
+    // Modal functions
+    function showAddBookingModal() {
+      document.getElementById('modal-title').textContent = 'เพิ่มการจองใหม่';
+      document.getElementById('modal-submit-text').textContent = 'เพิ่มการจอง';
+      document.getElementById('edit-booking-id').value = '';
+      document.getElementById('admin-booking-form').reset();
+      document.getElementById('modal-selected-info').classList.add('hidden');
+      document.getElementById('modal-seats-info').classList.add('hidden');
+      document.getElementById('modal-queue-container').innerHTML = '';
+      
+      // Load members into select
+      const memberSelect = document.getElementById('modal-member');
+      const members = allData.filter(item => item.type === 'member');
+      memberSelect.innerHTML = '<option value="">-- เลือกสมาชิก --</option>' + 
+        members.map(m => `<option value="${m.__backendId}">${m.name} (${m.phone})</option>`).join('');
+      
+      // Set min date
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('modal-date').setAttribute('min', today);
+      
+      document.getElementById('booking-modal').classList.remove('hidden');
+    }
+
+    function showEditBookingModal(backendId) {
+      const booking = allData.find(item => item.__backendId === backendId);
+      if (!booking) return;
+      
+      document.getElementById('modal-title').textContent = 'แก้ไขการจอง';
+      document.getElementById('modal-submit-text').textContent = 'บันทึกการแก้ไข';
+      document.getElementById('edit-booking-id').value = backendId;
+      
+      // Load members into select
+      const memberSelect = document.getElementById('modal-member');
+      const members = allData.filter(item => item.type === 'member');
+      memberSelect.innerHTML = '<option value="">-- เลือกสมาชิก --</option>' + 
+        members.map(m => `<option value="${m.__backendId}">${m.name} (${m.phone})</option>`).join('');
+      
+      // Fill form with booking data
+      document.getElementById('modal-member').value = booking.member_id;
+      document.getElementById('modal-guests').value = booking.guests;
+      document.getElementById('modal-date').value = booking.date;
+      document.getElementById('modal-time').value = booking.time;
+      
+      document.getElementById('modal-selected-queue').value = booking.queue_number;
+      document.getElementById('modal-selected-table').value = booking.table_number;
+      document.getElementById('modal-selected-table-type').value = booking.table_type;
+      document.getElementById('modal-selected-end-time').value = booking.end_time;
+      
+      document.getElementById('modal-info-queue').textContent = booking.queue_number;
+      document.getElementById('modal-info-table').textContent = booking.table_number;
+      document.getElementById('modal-info-type').textContent = getTableTypeIcon(booking.table_type) + ' ' + booking.table_type;
+      document.getElementById('modal-info-end-time').textContent = booking.end_time;
+      document.getElementById('modal-selected-info').classList.remove('hidden');
+      
+      // Set min date
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('modal-date').setAttribute('min', today);
+      
+      // Load available queues
+      loadModalQueues();
+      
+      document.getElementById('booking-modal').classList.remove('hidden');
+    }
+
+    function closeBookingModal() {
+      document.getElementById('booking-modal').classList.add('hidden');
+      document.getElementById('admin-booking-form').reset();
+    }
+
+    function loadModalQueues() {
+      const date = document.getElementById('modal-date').value;
+      const time = document.getElementById('modal-time').value;
+      const guests = parseInt(document.getElementById('modal-guests').value) || 0;
+      
+      if (!date || !time || guests === 0) {
+        return;
+      }
+      
+      const container = document.getElementById('modal-queue-container');
+      const seatsInfo = document.getElementById('modal-seats-info');
+      const editingBookingId = document.getElementById('edit-booking-id').value;
+      
+      const bookingsOnDate = allData.filter(item => 
+        item.type === 'booking' && 
+        item.date === date &&
+        item.__backendId !== editingBookingId // Exclude current booking when editing
+      );
+      
+      const occupiedQueues = [];
+      bookingsOnDate.forEach(booking => {
+        if (isTimeOverlap(booking.time, booking.end_time, time)) {
+          occupiedQueues.push({
+            queueNum: booking.queue_number,
+            endTime: booking.end_time
+          });
+        }
+      });
+      
+      const availableSeats = 20 - occupiedQueues.length;
+      document.getElementById('modal-available-seats').textContent = availableSeats;
+      seatsInfo.classList.remove('hidden');
+      
+      let html = '';
+      for (let i = 1; i <= 20; i++) {
+        const queueNum = String(i).padStart(2, '0');
+        const occupied = occupiedQueues.find(oq => oq.queueNum === queueNum);
+        const isBooked = !!occupied;
+        const table = tableConfig[i - 1];
+        const icon = getTableTypeIcon(table.type);
+        const canFit = guests <= table.capacity;
+        
+        html += `
+          <div class="queue-card ${isBooked ? 'booked' : ''} ${!canFit && !isBooked ? 'opacity-50' : ''} p-3 rounded-lg text-center" 
+               style="background-color: ${isBooked ? '#f1f5f9' : '#ffffff'}; border: 3px solid #e2e8f0; cursor: ${isBooked || !canFit ? 'not-allowed' : 'pointer'}; min-height: 100px;"
+               onclick="${isBooked || !canFit ? '' : `selectModalQueue('${queueNum}', '${table.table}', '${table.type}', '${time}')`}">
+            <div class="text-2xl font-bold mb-1" style="color: ${isBooked ? '#94a3b8' : '#7c3aed'};">${queueNum}</div>
+            <div class="text-xs mb-1" style="color: #64748b;">${icon} ${table.type}</div>
+            <div class="text-xs font-semibold" style="color: #475569;">โต๊ะ ${table.table}</div>
+            <div class="text-xs mt-1" style="color: #94a3b8;">👥 ${table.capacity}</div>
+            ${isBooked ? `<div class="text-xs mt-1 font-semibold" style="color: #ef4444;">ว่าง ${occupied.endTime}</div>` : ''}
+            ${!canFit && !isBooked ? '<div class="text-xs mt-1 font-semibold" style="color: #f59e0b;">ไม่พอนั่ง</div>' : ''}
+          </div>
+        `;
+      }
+      
+      container.innerHTML = html;
+    }
+
+    function selectModalQueue(queueNum, tableNum, tableType, startTime) {
+      const endTime = calculateEndTime(startTime);
+      
+      document.getElementById('modal-selected-queue').value = queueNum;
+      document.getElementById('modal-selected-table').value = tableNum;
+      document.getElementById('modal-selected-table-type').value = tableType;
+      document.getElementById('modal-selected-end-time').value = endTime;
+      
+      document.getElementById('modal-info-queue').textContent = queueNum;
+      document.getElementById('modal-info-table').textContent = tableNum;
+      document.getElementById('modal-info-type').textContent = getTableTypeIcon(tableType) + ' ' + tableType;
+      document.getElementById('modal-info-end-time').textContent = endTime;
+      
+      document.getElementById('modal-selected-info').classList.remove('hidden');
+      
+      document.querySelectorAll('#modal-queue-container .queue-card').forEach(card => {
+        card.classList.remove('selected');
+      });
+      
+      event.currentTarget.classList.add('selected');
+    }
+
+    // Update admin statistics
+    function updateAdminStats() {
+      const members = allData.filter(item => item.type === 'member');
+      const bookings = allData.filter(item => item.type === 'booking');
+      const today = new Date().toISOString().split('T')[0];
+      const todayBookings = bookings.filter(b => b.date === today);
+      
+      document.getElementById('total-members').textContent = members.length;
+      document.getElementById('total-bookings').textContent = bookings.length;
+      document.getElementById('today-bookings').textContent = todayBookings.length;
+    }
+
+    // Table configuration
+    const tableConfig = [
+      { table: 'V1', type: 'VIP', capacity: 6 },
+      { table: 'V2', type: 'VIP', capacity: 6 },
+      { table: 'V3', type: 'VIP', capacity: 4 },
+      { table: 'V4', type: 'VIP', capacity: 4 },
+      { table: 'F1', type: 'Family', capacity: 8 },
+      { table: 'F2', type: 'Family', capacity: 8 },
+      { table: 'F3', type: 'Family', capacity: 6 },
+      { table: 'F4', type: 'Family', capacity: 6 },
+      { table: 'F5', type: 'Family', capacity: 4 },
+      { table: 'F6', type: 'Family', capacity: 4 },
+      { table: 'S1', type: 'Standard', capacity: 4 },
+      { table: 'S2', type: 'Standard', capacity: 4 },
+      { table: 'S3', type: 'Standard', capacity: 4 },
+      { table: 'S4', type: 'Standard', capacity: 4 },
+      { table: 'S5', type: 'Standard', capacity: 2 },
+      { table: 'S6', type: 'Standard', capacity: 2 },
+      { table: 'S7', type: 'Standard', capacity: 2 },
+      { table: 'S8', type: 'Standard', capacity: 2 },
+      { table: 'S9', type: 'Standard', capacity: 2 },
+      { table: 'S10', type: 'Standard', capacity: 2 }
+    ];
+
+    function calculateEndTime(startTime) {
+      const [hours, minutes] = startTime.split(':').map(Number);
+      let endHours = hours + 2;
+      if (endHours >= 24) endHours -= 24;
+      return String(endHours).padStart(2, '0') + ':' + String(minutes).padStart(2, '0');
+    }
+
+    function getTableTypeIcon(type) {
+      if (type === 'VIP') return '👑';
+      if (type === 'Family') return '👨‍👩‍👧‍👦';
+      return '🪑';
+    }
+
+    function isTimeOverlap(bookingTime, bookingEndTime, checkTime) {
+      const [checkHour, checkMin] = checkTime.split(':').map(Number);
+      const [bookingHour, bookingMin] = bookingTime.split(':').map(Number);
+      const [endHour, endMin] = bookingEndTime.split(':').map(Number);
+      
+      const checkMinutes = checkHour * 60 + checkMin;
+      const bookingMinutes = bookingHour * 60 + bookingMin;
+      const endMinutes = endHour * 60 + endMin;
+      
+      return checkMinutes >= bookingMinutes && checkMinutes < endMinutes;
+    }
+
+    function loadAvailableQueues() {
+      const date = document.getElementById('date').value;
+      const time = document.getElementById('time').value;
+      const guests = parseInt(document.getElementById('guests').value) || 0;
+      
+      if (!date || !time || guests === 0) {
+        return;
+      }
+      
+      const container = document.getElementById('queue-container');
+      const seatsInfo = document.getElementById('seats-info');
+      
+      const bookingsOnDate = allData.filter(item => item.type === 'booking' && item.date === date);
+      
+      const occupiedQueues = [];
+      bookingsOnDate.forEach(booking => {
+        if (isTimeOverlap(booking.time, booking.end_time, time)) {
+          occupiedQueues.push({
+            queueNum: booking.queue_number,
+            endTime: booking.end_time
+          });
+        }
+      });
+      
+      const availableSeats = 20 - occupiedQueues.length;
+      document.getElementById('available-seats').textContent = availableSeats;
+      seatsInfo.classList.remove('hidden');
+      
+      let html = '';
+      for (let i = 1; i <= 20; i++) {
+        const queueNum = String(i).padStart(2, '0');
+        const occupied = occupiedQueues.find(oq => oq.queueNum === queueNum);
+        const isBooked = !!occupied;
+        const table = tableConfig[i - 1];
+        const icon = getTableTypeIcon(table.type);
+        const canFit = guests <= table.capacity;
+        
+        html += `
+          <div class="queue-card ${isBooked ? 'booked' : ''} ${!canFit && !isBooked ? 'opacity-50' : ''} p-4 rounded-lg" 
+               style="background-color: ${isBooked ? '#f1f5f9' : '#ffffff'}; border: 3px solid #e2e8f0; cursor: ${isBooked || !canFit ? 'not-allowed' : 'pointer'};"
+               onclick="${isBooked || !canFit ? '' : `selectQueue('${queueNum}', '${table.table}', '${table.type}', '${time}')`}">
+            <div class="text-center">
+              <div class="text-3xl font-bold mb-1" style="color: ${isBooked ? '#94a3b8' : '#7c3aed'};">${queueNum}</div>
+              <div class="text-xs mb-1" style="color: #64748b;">${icon} ${table.type}</div>
+              <div class="text-xs font-semibold" style="color: #475569;">โต๊ะ ${table.table}</div>
+              <div class="text-xs mt-1" style="color: #94a3b8;">👥 ${table.capacity} ที่</div>
+              ${isBooked ? `<div class="text-xs mt-1 font-semibold" style="color: #ef4444;">ว่าง ${occupied.endTime} น.</div>` : ''}
+              ${!canFit && !isBooked ? '<div class="text-xs mt-1 font-semibold" style="color: #f59e0b;">ไม่พอนั่ง</div>' : ''}
+            </div>
+          </div>
+        `;
+      }
+      
+      container.innerHTML = html;
+    }
+
+    function selectQueue(queueNum, tableNum, tableType, startTime) {
+      const endTime = calculateEndTime(startTime);
+      
+      document.getElementById('selected-queue').value = queueNum;
+      document.getElementById('selected-table').value = tableNum;
+      document.getElementById('selected-table-type').value = tableType;
+      document.getElementById('selected-end-time').value = endTime;
+      
+      document.getElementById('info-queue').textContent = queueNum;
+      document.getElementById('info-table').textContent = tableNum;
+      document.getElementById('info-type').textContent = getTableTypeIcon(tableType) + ' ' + tableType;
+      document.getElementById('info-end-time').textContent = endTime;
+      
+      document.getElementById('selected-info').classList.remove('hidden');
+      
+      document.querySelectorAll('.queue-card').forEach(card => {
+        card.classList.remove('selected');
+      });
+      
+      event.currentTarget.classList.add('selected');
+    }
+
+    // Render my bookings
+    function renderMyBookings() {
+      if (!loggedInMember) return;
+      
+      const container = document.getElementById('my-bookings-list');
+      const myBookings = allData.filter(item => item.type === 'booking' && item.member_id === loggedInMember.__backendId);
+      
+      if (myBookings.length === 0) {
+        container.innerHTML = '<p class="text-center py-8" style="color: #a0aec0;">ยังไม่มีการจอง</p>';
+        return;
+      }
+      
+      const sorted = [...myBookings].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      
+      container.innerHTML = sorted.map(booking => `
+        <div class="booking-card p-6 rounded-lg" style="background-color: #f3f0ff; border-left: 4px solid #a78bfa;">
+          <div class="flex justify-between items-start flex-wrap gap-4">
+            <div class="flex-1">
+              <div class="flex items-center gap-3 mb-3">
+                <div class="text-4xl font-bold px-4 py-2 rounded-lg" style="background-color: #a78bfa; color: white;">
+                  ${booking.queue_number}
+                </div>
+                <div>
+                  <p class="font-semibold text-lg" style="color: #7c3aed;">${getTableTypeIcon(booking.table_type || 'Standard')} ${booking.table_type || 'Standard'}</p>
+                  <p class="text-sm" style="color: #4a5568;">บัตรคิวของคุณ</p>
+                </div>
+              </div>
+              <div class="space-y-1" style="color: #4a5568;">
+                <p>🪑 <strong>โต๊ะ:</strong> ${booking.table_number || '-'}</p>
+                <p>👥 <strong>จำนวน:</strong> ${booking.guests} คน</p>
+                <p>📅 <strong>วันที่:</strong> ${formatDate(booking.date)}</p>
+                <p>🕐 <strong>เข้า:</strong> ${booking.time} น.</p>
+                <p>🕐 <strong>ออก:</strong> ${booking.end_time || '-'} น. <span class="text-xs" style="color: #94a3b8;">(2 ชม.)</span></p>
+                <p class="text-xs mt-2" style="color: #94a3b8;">จองเมื่อ: ${formatDateTime(booking.created_at)}</p>
+              </div>
+            </div>
+            <button onclick="cancelMyBooking('${booking.__backendId}')" class="px-4 py-2 rounded-lg font-medium text-white transition-colors" style="background-color: #f56565;">
+              ยกเลิก
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function cancelMyBooking(backendId) {
+      const booking = allData.find(item => item.__backendId === backendId);
+      if (!booking) return;
+      
+      const result = await window.dataSdk.delete(booking);
+      
+      if (result.isOk) {
+        showToast('ยกเลิกการจองสำเร็จ', 'success');
+        renderMyBookings();
+      } else {
+        showToast('เกิดข้อผิดพลาดในการยกเลิก', 'error');
+      }
+    }
+
+    // Data SDK Handler
+    const dataHandler = {
+      onDataChanged(data) {
+        allData = data;
+        
+        if (currentPage === 'admin') {
+          updateAdminStats();
+          renderAdminMembers();
+          renderAdminBookings();
+        }
+        
+        if (loggedInMember && currentBookingTab === 'mylist') {
+          renderMyBookings();
+        }
+      }
+    };
+
+    // Initialize SDKs
+    async function initApp() {
+      const dataResult = await window.dataSdk.init(dataHandler);
+      if (!dataResult.isOk) {
+        showToast('เกิดข้อผิดพลาดในการเชื่อมต่อ', 'error');
+        return;
+      }
+
+      if (window.elementSdk) {
+        window.elementSdk.init({
+          defaultConfig,
+          onConfigChange: async (config) => {
+            const baseSize = config.font_size || defaultConfig.font_size;
+            const fontFamily = config.font_family || defaultConfig.font_family;
+            const baseFontStack = 'Arial, sans-serif';
+            
+            const restaurantName = document.getElementById('restaurant-name-welcome');
+            restaurantName.textContent = config.restaurant_name || defaultConfig.restaurant_name;
+            restaurantName.style.fontFamily = `${fontFamily}, ${baseFontStack}`;
+            restaurantName.style.fontSize = `${baseSize * 3.75}px`;
+            
+            const welcomeMsg = document.getElementById('welcome-message-text');
+            welcomeMsg.textContent = config.welcome_message || defaultConfig.welcome_message;
+            welcomeMsg.style.fontFamily = `${fontFamily}, ${baseFontStack}`;
+            welcomeMsg.style.fontSize = `${baseSize * 1.5}px`;
+            
+            const app = document.getElementById('app');
+            app.style.background = `linear-gradient(135deg, ${config.background_gradient_start || defaultConfig.background_gradient_start} 0%, ${config.background_gradient_end || defaultConfig.background_gradient_end} 100%)`;
+            
+            document.querySelectorAll('h2, h3').forEach(el => {
+              el.style.color = config.text_color || defaultConfig.text_color;
+              el.style.fontFamily = `${fontFamily}, ${baseFontStack}`;
+            });
+            
+            document.querySelectorAll('label').forEach(el => {
+              el.style.color = config.text_color || defaultConfig.text_color;
+              el.style.fontFamily = `${fontFamily}, ${baseFontStack}`;
+            });
+            
+            document.querySelectorAll('input, select, textarea, button').forEach(el => {
+              el.style.fontFamily = `${fontFamily}, ${baseFontStack}`;
+            });
+          },
+          mapToCapabilities: (config) => ({
+            recolorables: [
+              {
+                get: () => config.background_gradient_start || defaultConfig.background_gradient_start,
+                set: (value) => {
+                  if (window.elementSdk) {
+                    window.elementSdk.setConfig({ background_gradient_start: value });
+                  }
+                }
+              },
+              {
+                get: () => config.background_gradient_end || defaultConfig.background_gradient_end,
+                set: (value) => {
+                  if (window.elementSdk) {
+                    window.elementSdk.setConfig({ background_gradient_end: value });
+                  }
+                }
+              },
+              {
+                get: () => config.surface_color || defaultConfig.surface_color,
+                set: (value) => {
+                  if (window.elementSdk) {
+                    window.elementSdk.setConfig({ surface_color: value });
+                  }
+                }
+              },
+              {
+                get: () => config.text_color || defaultConfig.text_color,
+                set: (value) => {
+                  if (window.elementSdk) {
+                    window.elementSdk.setConfig({ text_color: value });
+                  }
+                }
+              },
+              {
+                get: () => config.button_color || defaultConfig.button_color,
+                set: (value) => {
+                  if (window.elementSdk) {
+                    window.elementSdk.setConfig({ button_color: value });
+                  }
+                }
+              }
+            ],
+            borderables: [],
+            fontEditable: {
+              get: () => config.font_family || defaultConfig.font_family,
+              set: (value) => {
+                if (window.elementSdk) {
+                  window.elementSdk.setConfig({ font_family: value });
+                }
+              }
+            },
+            fontSizeable: {
+              get: () => config.font_size || defaultConfig.font_size,
+              set: (value) => {
+                if (window.elementSdk) {
+                  window.elementSdk.setConfig({ font_size: value });
+                }
+              }
+            }
+          }),
+          mapToEditPanelValues: (config) => new Map([
+            ["restaurant_name", config.restaurant_name || defaultConfig.restaurant_name],
+            ["welcome_message", config.welcome_message || defaultConfig.welcome_message]
+          ])
+        });
+      }
+
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('date').setAttribute('min', today);
+      
+      const minBirthDate = new Date();
+      minBirthDate.setFullYear(new Date().getFullYear() - 100);
+      const maxBirthDate = new Date();
+      maxBirthDate.setFullYear(new Date().getFullYear() - 1);
+      
+      document.getElementById('reg-birth-date').setAttribute('min', minBirthDate.toISOString().split('T')[0]);
+      document.getElementById('reg-birth-date').setAttribute('max', maxBirthDate.toISOString().split('T')[0]);
+    }
+
+    // Login form submission
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const loginType = document.getElementById('login-type').value;
+      const user = document.getElementById('login-user').value.trim();
+      const password = document.getElementById('login-password').value.trim();
+      
+      let member;
+      if (loginType === 'phone') {
+        if (user.length !== 10 || !/^[0-9]{10}$/.test(user)) {
+          showToast('กรุณากรอกหมายเลขโทรศัพท์ 10 หลัก', 'error');
+          return;
+        }
+        member = allData.find(item => item.type === 'member' && item.phone === user && item.password === password);
+      } else {
+        member = allData.find(item => item.type === 'member' && item.username === user && item.password === password);
+      }
+      
+      if (member) {
+        loggedInMember = member;
+        document.getElementById('logged-user-name').textContent = member.name;
+        goToPage('booking');
+        showToast('เข้าสู่ระบบสำเร็จ', 'success');
+        document.getElementById('login-form').reset();
+      } else {
+        showToast('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง', 'error');
+      }
+    });
+
+    // Register form submission
+    document.getElementById('register-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      if (isLoading) return;
+      
+      const phone = document.getElementById('reg-phone').value.trim();
+      const username = document.getElementById('reg-username').value.trim();
+      
+      if (phone.length !== 10 || !/^[0-9]{10}$/.test(phone)) {
+        showToast('กรุณากรอกหมายเลขโทรศัพท์ 10 หลัก', 'error');
+        return;
+      }
+      
+      const existingPhone = allData.find(item => item.type === 'member' && item.phone === phone);
+      const existingUsername = allData.find(item => item.type === 'member' && item.username === username);
+      
+      if (existingPhone) {
+        showToast('หมายเลขโทรศัพท์นี้ถูกใช้งานแล้ว', 'error');
+        return;
+      }
+      
+      if (existingUsername) {
+        showToast('Username นี้ถูกใช้งานแล้ว', 'error');
+        return;
+      }
+      
+      if (allData.length >= 999) {
+        showToast('ถึงขีดจำกัดจำนวนรายการสูงสุดแล้ว', 'error');
+        return;
+      }
+      
+      isLoading = true;
+      const registerBtn = document.getElementById('register-btn');
+      registerBtn.disabled = true;
+      registerBtn.innerHTML = '<span>กำลังสมัคร...</span><div class="loading-spinner"></div>';
+      
+      const formData = {
+        id: Date.now().toString(),
+        type: 'member',
+        name: document.getElementById('reg-name').value,
+        birth_date: document.getElementById('reg-birth-date').value,
+        phone: phone,
+        email: document.getElementById('reg-email').value,
+        username: username,
+        password: document.getElementById('reg-password').value,
+        created_at: new Date().toISOString()
+      };
+      
+      const result = await window.dataSdk.create(formData);
+      
+      isLoading = false;
+      registerBtn.disabled = false;
+      registerBtn.innerHTML = '<span>สมัครสมาชิก</span>';
+      
+      if (result.isOk) {
+        showToast('สมัครสมาชิกสำเร็จ! กรุณาเข้าสู่ระบบ', 'success');
+        document.getElementById('register-form').reset();
+        setTimeout(() => {
+          goToPage('login');
+        }, 1500);
+      } else {
+        showToast('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง', 'error');
+      }
+    });
+
+    // Admin booking form submission
+    document.getElementById('admin-booking-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      if (isLoading) return;
+      
+      const editingId = document.getElementById('edit-booking-id').value;
+      const memberId = document.getElementById('modal-member').value;
+      const selectedQueue = document.getElementById('modal-selected-queue').value;
+      
+      if (!memberId) {
+        showToast('กรุณาเลือกสมาชิก', 'error');
+        return;
+      }
+      
+      if (!selectedQueue) {
+        showToast('กรุณาเลือกบัตรคิว', 'error');
+        return;
+      }
+      
+      if (!editingId && allData.length >= 999) {
+        showToast('ถึงขีดจำกัด 999 รายการแล้ว', 'error');
+        return;
+      }
+      
+      const date = document.getElementById('modal-date').value;
+      const time = document.getElementById('modal-time').value;
+      const endTime = document.getElementById('modal-selected-end-time').value;
+      
+      // Check for conflicts (excluding current booking if editing)
+      const conflictBooking = allData.find(item => 
+        item.type === 'booking' && 
+        item.queue_number === selectedQueue && 
+        item.date === date &&
+        item.__backendId !== editingId &&
+        isTimeOverlap(item.time, item.end_time, time)
+      );
+      
+      if (conflictBooking) {
+        showToast(`ที่นั่งนี้ถูกจองแล้ว (ว่าง ${conflictBooking.end_time} น.)`, 'error');
+        return;
+      }
+      
+      isLoading = true;
+      const submitBtn = document.getElementById('modal-submit-btn');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span>กำลังบันทึก...</span><div class="loading-spinner"></div>';
+      
+      if (editingId) {
+        // Update existing booking
+        const booking = allData.find(item => item.__backendId === editingId);
+        if (!booking) {
+          showToast('ไม่พบข้อมูลการจอง', 'error');
+          isLoading = false;
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<span id="modal-submit-text">บันทึกการแก้ไข</span>';
+          return;
+        }
+        
+        booking.member_id = memberId;
+        booking.guests = parseInt(document.getElementById('modal-guests').value);
+        booking.date = date;
+        booking.time = time;
+        booking.queue_number = selectedQueue;
+        booking.table_number = document.getElementById('modal-selected-table').value;
+        booking.table_type = document.getElementById('modal-selected-table-type').value;
+        booking.end_time = endTime;
+        
+        const result = await window.dataSdk.update(booking);
+        
+        isLoading = false;
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<span id="modal-submit-text">บันทึกการแก้ไข</span>';
+        
+        if (result.isOk) {
+          showToast('แก้ไขการจองสำเร็จ!', 'success');
+          closeBookingModal();
+        } else {
+          showToast('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง', 'error');
+        }
+      } else {
+        // Create new booking
+        const formData = {
+          id: Date.now().toString(),
+          type: 'booking',
+          member_id: memberId,
+          guests: parseInt(document.getElementById('modal-guests').value),
+          date: date,
+          time: time,
+          queue_number: selectedQueue,
+          table_number: document.getElementById('modal-selected-table').value,
+          table_type: document.getElementById('modal-selected-table-type').value,
+          end_time: endTime,
+          created_at: new Date().toISOString()
+        };
+        
+        const result = await window.dataSdk.create(formData);
+        
+        isLoading = false;
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<span id="modal-submit-text">เพิ่มการจอง</span>';
+        
+        if (result.isOk) {
+          showToast('เพิ่มการจองสำเร็จ', 'success');
+          closeBookingModal();
+        } else {
+          showToast('เกิดข้อผิดพลาด กรุณาลองใหม่', 'error');
+        }
+      }
+    });
+
+    // Booking form submission
+    document.getElementById('booking-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      if (isLoading || !loggedInMember) return;
+      
+      const selectedQueue = document.getElementById('selected-queue').value;
+      if (!selectedQueue) {
+        showToast('กรุณาเลือกบัตรคิว', 'error');
+        return;
+      }
+      
+      if (allData.length >= 999) {
+        showToast('ถึงขีดจำกัดจำนวนรายการสูงสุดแล้ว', 'error');
+        return;
+      }
+      
+      const date = document.getElementById('date').value;
+      const time = document.getElementById('time').value;
+      const endTime = document.getElementById('selected-end-time').value;
+      
+      const conflictBooking = allData.find(item => 
+        item.type === 'booking' && 
+        item.queue_number === selectedQueue && 
+        item.date === date &&
+        isTimeOverlap(item.time, item.end_time, time)
+      );
+      
+      if (conflictBooking) {
+        showToast(`ที่นั่งนี้ถูกจองแล้ว (ว่าง ${conflictBooking.end_time} น.)`, 'error');
+        return;
+      }
+      
+      isLoading = true;
+      const submitBtn = document.getElementById('submit-btn');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span>กำลังจอง...</span><div class="loading-spinner"></div>';
+      
+      const formData = {
+        id: Date.now().toString(),
+        type: 'booking',
+        member_id: loggedInMember.__backendId,
+        guests: parseInt(document.getElementById('guests').value),
+        date: date,
+        time: time,
+        queue_number: selectedQueue,
+        table_number: document.getElementById('selected-table').value,
+        table_type: document.getElementById('selected-table-type').value,
+        end_time: endTime,
+        created_at: new Date().toISOString()
+      };
+      
+      const result = await window.dataSdk.create(formData);
+      
+      isLoading = false;
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = '<span>ยืนยันการจอง</span>';
+      
+      if (result.isOk) {
+        showToast('จองโต๊ะสำเร็จ', 'success');
+        document.getElementById('booking-form').reset();
+        document.getElementById('selected-queue').value = '';
+        document.getElementById('selected-table').value = '';
+        document.getElementById('selected-table-type').value = '';
+        document.getElementById('selected-end-time').value = '';
+        document.getElementById('selected-info').classList.add('hidden');
+        document.getElementById('seats-info').classList.add('hidden');
+        document.getElementById('queue-container').innerHTML = '';
+      } else {
+        showToast('เกิดข้อผิดพลาด กรุณาลองใหม่', 'error');
+      }
+    });
+
+    // Render admin members
+    function renderAdminMembers() {
+      const container = document.getElementById('admin-members-list');
+      const members = allData.filter(item => item.type === 'member');
+      
+      if (members.length === 0) {
+        container.innerHTML = '<p class="text-center py-8" style="color: #a0aec0;">ยังไม่มีสมาชิก</p>';
+        return;
+      }
+      
+      const sorted = [...members].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      
+      container.innerHTML = sorted.map(member => `
+        <div class="booking-card p-6 rounded-xl shadow-lg" style="background-color: #f0fdf4; border-left: 4px solid #86efac;">
+          <div class="flex justify-between items-start flex-wrap gap-4">
+            <div class="flex-1">
+              <h3 class="text-xl font-semibold mb-2" style="color: #2d3748;">👤 ${member.name}</h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-2" style="color: #4a5568;">
+                <p>📞 ${member.phone}</p>
+                <p>📧 ${member.email}</p>
+                <p>👤 Username: ${member.username || '-'}</p>
+                <p> ${formatDate(member.birth_date)}</p>
+                <p class="text-xs col-span-2 mt-1" style="color: #94a3b8;">สมัครเมื่อ: ${formatDateTime(member.created_at)}</p>
+              </div>
+            </div>
+            <button onclick="deleteMember('${member.__backendId}')" class="px-4 py-2 rounded-lg font-medium text-white transition-colors" style="background-color: #f56565;">
+              ลบ
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Render admin bookings
+    function renderAdminBookings() {
+      const container = document.getElementById('admin-bookings-list');
+      const bookings = allData.filter(item => item.type === 'booking');
+      
+      if (bookings.length === 0) {
+        container.innerHTML = '<p class="text-center py-8" style="color: #a0aec0;">ยังไม่มีการจอง</p>';
+        return;
+      }
+      
+      const sorted = [...bookings].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      
+      container.innerHTML = sorted.map(booking => {
+        const member = allData.find(item => item.__backendId === booking.member_id);
+        const memberName = member ? member.name : 'ไม่พบข้อมูล';
+        
+        return `
+          <div class="booking-card p-6 rounded-xl shadow-lg" style="background-color: #f3f0ff; border-left: 4px solid #a78bfa;">
+            <div class="flex justify-between items-start flex-wrap gap-4">
+              <div class="flex-1">
+                <div class="flex items-center gap-3 mb-3">
+                  <div class="text-4xl font-bold px-4 py-2 rounded-lg" style="background-color: #a78bfa; color: white;">
+                    ${booking.queue_number}
+                  </div>
+                  <div>
+                    <h3 class="text-xl font-semibold" style="color: #2d3748;">${memberName}</h3>
+                    <p class="text-sm" style="color: #64748b;">${getTableTypeIcon(booking.table_type || 'Standard')} ${booking.table_type || 'Standard'} - โต๊ะ ${booking.table_number || '-'}</p>
+                  </div>
+                </div>
+                <div class="grid grid-cols-2 gap-2" style="color: #4a5568;">
+                  <p>👥 ${booking.guests} คน</p>
+                  <p>🪑 โต๊ะ ${booking.table_number || '-'}</p>
+                  <p>📅 ${formatDate(booking.date)}</p>
+                  <p>🕐 ${booking.time} - ${booking.end_time || '-'} น.</p>
+                  <p class="col-span-2 text-xs mt-1" style="color: #94a3b8;">จองเมื่อ: ${formatDateTime(booking.created_at)}</p>
+                </div>
+              </div>
+              <div class="flex gap-2">
+                <button onclick="showEditBookingModal('${booking.__backendId}')" class="px-4 py-2 rounded-lg font-medium text-white transition-colors" style="background-color: #fbbf24;">
+                  แก้ไข
+                </button>
+                <button onclick="deleteBooking('${booking.__backendId}')" class="px-4 py-2 rounded-lg font-medium text-white transition-colors" style="background-color: #f56565;">
+                  ลบ
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function deleteMember(backendId) {
+      const member = allData.find(item => item.__backendId === backendId);
+      if (!member) return;
+      
+      const result = await window.dataSdk.delete(member);
+      
+      if (result.isOk) {
+        showToast('ลบสมาชิกสำเร็จ', 'success');
+      } else {
+        showToast('เกิดข้อผิดพลาดในการลบ', 'error');
+      }
+    }
+
+    async function deleteBooking(backendId) {
+      const booking = allData.find(item => item.__backendId === backendId);
+      if (!booking) return;
+      
+      const result = await window.dataSdk.delete(booking);
+      
+      if (result.isOk) {
+        showToast('ลบการจองสำเร็จ', 'success');
+      } else {
+        showToast('เกิดข้อผิดพลาดในการลบ', 'error');
+      }
+    }
+
+    function showToast(message, type) {
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.textContent = message;
+      toast.style.backgroundColor = type === 'success' ? '#48bb78' : '#f56565';
+      document.body.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.remove();
+      }, 3000);
+    }
+
+    function formatDate(dateString) {
+      const months = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+      const date = new Date(dateString);
+      return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear() + 543}`;
+    }
+
+    function formatDateTime(isoString) {
+      const date = new Date(isoString);
+      const months = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+      const hours = String(date.getHours()).padStart(2, '0');
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+      return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear() + 543} ${hours}:${minutes} น.`;
+    }
+
+    initApp();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9c92c83c25595f76',t:'MTc3MDI5ODQzNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
